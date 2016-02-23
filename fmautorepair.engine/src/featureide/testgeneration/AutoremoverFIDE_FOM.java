@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import de.ovgu.featureide.fm.core.FeatureModel;
 import fmautorepair.mutationoperators.FMMutation;
-import fmautorepair.mutationoperators.FMMutationProcess;
+import fmautorepair.mutationprocess.FMMutationProcess;
 import testgeneration.OracleFIDE;
 
 /** first order mutants naive implementation */

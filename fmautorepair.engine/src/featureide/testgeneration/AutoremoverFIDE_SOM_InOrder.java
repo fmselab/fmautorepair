@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import de.ovgu.featureide.fm.core.FeatureModel;
 import fmautorepair.mutationoperators.FMMutation;
-import fmautorepair.mutationoperators.FMMutationProcess;
+import fmautorepair.mutationprocess.FMMutationProcess;
 import testgeneration.OracleFIDE;
 
 public class AutoremoverFIDE_SOM_InOrder extends AutoremoverFIDE{

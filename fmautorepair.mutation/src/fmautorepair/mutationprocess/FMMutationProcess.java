@@ -1,4 +1,4 @@
-package fmautorepair.mutationoperators;
+package fmautorepair.mutationprocess;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import de.ovgu.featureide.fm.core.FeatureModel;
+import fmautorepair.mutationoperators.FMMutation;
+import fmautorepair.mutationoperators.FMMutator;
 import fmautorepair.mutationoperators.constraints.ConstraintAdder;
 import fmautorepair.mutationoperators.constraints.ConstraintRemover;
 import fmautorepair.mutationoperators.constraints.ConstraintSubstitute;

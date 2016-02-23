@@ -17,7 +17,7 @@ import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.editing.NodeCreator;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
-import fmautorepair.mutationoperators.FMMutationProcess;
+import fmautorepair.mutationprocess.FMMutationProcess;
 import testgeneration.OracleFIDE;
 
 public class EqAutoFIDEHOM extends AlgorithmUsingFIDE {
