@@ -28,6 +28,7 @@ import splar.core.fm.configuration.ConfigurationEngineException;
 
 public class Experiments {
 	
+	private static final String FMAUTOREPAIR_MODELS = "/fmautorepair.models";
 	static private DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HHmmss");
 
 	public static void main(String[] args)
@@ -37,7 +38,7 @@ public class Experiments {
 		File dir = new File(System.getProperty("user.dir")).getParentFile();
 		String a = null;
 		try {
-			a = URLDecoder.decode(dir.getAbsolutePath()+"/fmautorepair.models", "utf-8");
+			a = URLDecoder.decode(dir.getAbsolutePath()+FMAUTOREPAIR_MODELS, "utf-8");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

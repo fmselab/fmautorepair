@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,17 +28,28 @@ import splar.core.fm.configuration.ConfigurationEngineException;
 import testgeneration.OracleFidebyCpp;
 
 public class ExperimentsCpp {
+	private static final String FMAUTOREPAIR_MODELS = "/fmautorepair.models";
 	static private DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HHmmss");
 
 	public static void main(String[] args) throws UnsupportedModelException, IOException, TimeoutException,
 			FeatureModelException, ConfigurationEngineException, ExecutionException, InterruptedException {
 		Logger.getLogger(AlgorithmUsingFIDE.class).setLevel(Level.OFF);
 		Logger.getLogger("mutationoperators").setLevel(Level.OFF);
+		
+		File dir = new File(System.getProperty("user.dir")).getParentFile();
+		String a = null;
+		try {
+			a = URLDecoder.decode(dir.getAbsolutePath()+FMAUTOREPAIR_MODELS, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.setProperty("user.dir", a);
 		// System.out.println("Starting");
 		//
 		// testAllMutantsMT("examples_fmsfrompreprocessor/",
 		// AutoremoverFIDECollect.factory, 3600, 1, "Collect", 10, false);
-		testAllMutantsMT("examples_fmsfrompreprocessor/", AutoremoverFIDE_FOM.factory, 3600, 1, "ONEDC", 10, false);
+		testAllMutantsMT(a+"/"+"examples_fmsfrompreprocessor/", AutoremoverFIDE_FOM.factory, 3600, 1, "ONEDC", 10, false);
 		// testAllMutantsMT("examples_fmsfrompreprocessor/",
 		// AutoremoverFIDE_SOM_InOrder.factory, 3600, 10, "SecondOrder", 1,
 		// false);
@@ -84,6 +97,7 @@ public class ExperimentsCpp {
 					TimeoutException, FeatureModelException, ConfigurationEngineException, ExecutionException,
 					InterruptedException {
 		try {
+
 			File file = new File(folder);
 			String[] names = file.list();
 			Arrays.sort(names, new Comparator<String>() {

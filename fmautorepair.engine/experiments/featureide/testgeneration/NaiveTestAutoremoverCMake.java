@@ -2,6 +2,8 @@ package featureide.testgeneration;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -18,6 +20,7 @@ import fmautorepair.utils.Utils;
 import testgeneration.OracleFidebyCMake;
 
 public class NaiveTestAutoremoverCMake {
+	 static String CURRENTDIR;
 
 	@BeforeClass
 	public static void setUpOp() {
@@ -32,6 +35,17 @@ public class NaiveTestAutoremoverCMake {
 		Logger.getLogger(OracleFidebyCMake.class).setLevel(Level.OFF);
 		Logger.getLogger(AutoremoverFIDECollect.class).setLevel(Level.DEBUG);
 		Logger.getLogger(ConstraintAdder.class).setLevel(Level.DEBUG);
+		File dir = new File(System.getProperty("user.dir")).getParentFile();
+		String a = null;
+		try {
+			a = URLDecoder.decode(dir.getAbsolutePath()+"/fmautorepair.models", "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.setProperty("user.dir", a);
+		//System.out.println(new File(System.getProperty("user.dir")).canRead());
+	    CURRENTDIR=a;
 	}
 
 	@Test
