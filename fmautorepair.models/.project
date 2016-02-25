@@ -3,6 +3,10 @@
 	<name>fmautorepair.models</name>
 	<comment></comment>
 	<projects>
+		<project>fmautorepair.engine</project>
+		<project>fmautorepair.libs</project>
+		<project>fmautorepair.mutation</project>
+		<project>fmautorepair.utils</project>
 	</projects>
 	<buildSpec>
 	</buildSpec>
