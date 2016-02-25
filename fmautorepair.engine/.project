@@ -3,6 +3,7 @@
 	<name>fmautorepair.engine</name>
 	<comment></comment>
 	<projects>
+		<project>fmautorepair.models</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

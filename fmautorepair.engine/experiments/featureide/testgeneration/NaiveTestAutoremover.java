@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,6 +26,8 @@ import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sat4j.specs.TimeoutException;
+
+import com.sun.prism.impl.ps.CachingRoundRectRep;
 
 import de.ovgu.featureide.fm.core.FeatureModel;
 import de.ovgu.featureide.fm.core.editing.Comparison;
@@ -45,7 +49,7 @@ import testgeneration.OracleFidebyCpp;
 
 public class NaiveTestAutoremover {
 	static private DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HHmmss");
-
+    static String CURRENTDIR;
 	@BeforeClass
 	public static void setUpOp() {
 
@@ -56,9 +60,22 @@ public class NaiveTestAutoremover {
 		// Logger.getLogger(EqAutoFIDE.class).setLevel(Level.DEBUG);
 		// Logger.getLogger(FM4Testgeneration.class).setLevel(Level.DEBUG);
 		Logger.getLogger("mutationoperators").setLevel(Level.OFF);
+		File dir = new File(System.getProperty("user.dir")).getParentFile();
+		String a = null;
+		try {
+			a = URLDecoder.decode(dir.getAbsolutePath()+"/fmautorepair.models", "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.setProperty("user.dir", a);
+		//System.out.println(new File(System.getProperty("user.dir")).canRead());
+	    CURRENTDIR=a;
 	}
 
 	private void testCouple(String cand, String or, boolean firstOrder) throws Exception {
+		cand=CURRENTDIR+"/"+cand;
+		or=CURRENTDIR+"/"+or;
 		if (firstOrder) {
 			testAgaintsOracle(cand, or, AutoremoverFIDE_FOM.factory);
 		} else {
@@ -79,6 +96,8 @@ public class NaiveTestAutoremover {
 	}
 
 	private void testCoupleC(String cand, String or) throws Exception {
+		cand=CURRENTDIR+"/"+cand;
+		or=CURRENTDIR+"/"+or;
 		FeatureModel candidate = Utils.readModel(cand);
 		AlgorithmUsingFIDE auto = null;
 		File file = new File(or);
@@ -289,8 +308,10 @@ public class NaiveTestAutoremover {
 			throws UnsupportedModelException, IOException,  TimeoutException, FeatureModelException,
 			ConfigurationEngineException, ExecutionException, InterruptedException {
 		String className = factory.getAlgorithmName();
+		folder=CURRENTDIR+"/"+folder;
 		File file = new File(folder);
 		String[] names = file.list();
+		System.out.println(" aaa"+file.list().length);
 		ArrayList<String> list = new ArrayList<>();
 		for (String name : names) {
 			if (new File(folder + name).isDirectory()) {
@@ -421,18 +442,22 @@ public class NaiveTestAutoremover {
 	// non scrive le colonne
 	static void testAllMutantsMT(String folder, int secondsTIMEOUT, int nsThread, int startRun, int Nruns,
 			PrintStream results, AlgorithmUsingFIDE.AutoremoverFIDEFactory... algs) {
+		folder=CURRENTDIR+"/"+folder;
 		File file = new File(folder);
 		String[] names = file.list();
+	
 		Arrays.sort(names, new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
 				return o1.compareToIgnoreCase(o2);
 			}
 		});
+        System.out.println("AAAAAAAAAAA "+names.length);
 		ArrayList<String> list = new ArrayList<>();
 		for (String name : names) {
 			if (new File(folder + name).isDirectory()) {
 				list.add(name);
+				System.out.println("----");
 			}
 		}
 		GeneratorThread t;
@@ -486,6 +511,7 @@ public class NaiveTestAutoremover {
 	private void test(String folderMutants, String oracleS)
 			throws FileNotFoundException, UnsupportedModelException, IOException, TimeoutException {
 		PrintStream fileStdOutput = new PrintStream(new BufferedOutputStream(new FileOutputStream("results_size.txt")));
+		folderMutants=CURRENTDIR+"/"+folderMutants;
 		File dir = new File(folderMutants);
 		assert dir.isDirectory();
 		ModelComparator comparator = new ModelComparator(1000000);
@@ -519,10 +545,13 @@ public class NaiveTestAutoremover {
 
 	private void getModelData(String folderMutants) throws FileNotFoundException, UnsupportedModelException {
 		PrintStream fileStdOutput = new PrintStream(new BufferedOutputStream(new FileOutputStream("Data.txt")));
+		folderMutants=CURRENTDIR+"/"+folderMutants;
 		File dir = new File(folderMutants);
 		assert dir.isDirectory();
 		File file = new File(folderMutants);
+		System.err.println(file.getParentFile().getAbsolutePath()+"   "+file.listFiles().length);
 		String[] names = file.list();
+		
 		Arrays.sort(names, new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {

@@ -3,9 +3,12 @@ package featureide.testgeneration;
 import static featureide.testgeneration.NaiveTestAutoremover.testAllMutantsMT;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +33,19 @@ public class Experiments {
 	public static void main(String[] args)
 			throws UnsupportedModelException, IOException, TimeoutException, FeatureModelException,
 			ConfigurationEngineException, ExecutionException, InterruptedException {
+		
+		File dir = new File(System.getProperty("user.dir")).getParentFile();
+		String a = null;
+		try {
+			a = URLDecoder.decode(dir.getAbsolutePath()+"/fmautorepair.models", "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.setProperty("user.dir", a);
+		NaiveTestAutoremover.CURRENTDIR=a;
+		//System.out.println(new File(System.getProperty("user.dir")).canRead());
+		
 		Logger.getLogger(AlgorithmUsingFIDE.class).setLevel(Level.OFF);
 		Logger.getLogger("mutationoperators").setLevel(Level.OFF);
 		Date date = new Date();
@@ -63,6 +79,7 @@ public class Experiments {
 		// run the experiments
 		GeneratorThread.printColumns(results);		
 		AutoremoverFIDEFactory[] algsArray = new AlgorithmUsingFIDE.AutoremoverFIDEFactory[algs.size()];
+		System.out.println("PROVA");
 		testAllMutantsMT(folder, secondsTIMEOUT, nsThread, 1, nruns,results, algs.toArray(algsArray));
 		// close
 		results.close();
