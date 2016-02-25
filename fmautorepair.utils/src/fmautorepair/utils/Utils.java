@@ -20,7 +20,6 @@ public class Utils{
 	/** read models from the model project */
 	
 	static public FeatureModel readModel(String path) throws FileNotFoundException, UnsupportedModelException {
-		path = "../fmautorepair.models/" + path;
 		FeatureModel fm = new FeatureModel();
 		AbstractFeatureModelReader reader = new XmlFeatureModelReader(fm);
 		reader.readFromFile(new File(path));
@@ -28,7 +27,6 @@ public class Utils{
 	}
 
 	static public FeatureModel readSPLOTModel(String path) throws FileNotFoundException, UnsupportedModelException {
-		path = "../fmautorepair.models/" + path;
 		FeatureModel fm = new FeatureModel();
 		AbstractFeatureModelReader reader = new SXFMReader(fm);
 		reader.readFromFile(new File(path));
