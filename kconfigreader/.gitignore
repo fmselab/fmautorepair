@@ -1,0 +1,10 @@
+tmp.rsf
+project/
+target/
+.idea/
+.idea_modules/
+.config
+.config.old
+gl/
+*.formula
+run.sh
