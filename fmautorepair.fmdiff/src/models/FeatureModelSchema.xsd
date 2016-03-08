@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fm="FeatureModelNameSpace" elementFormDefault="qualified" targetNamespace="FeatureModelNameSpace">
+
+<!-- Feature model attributes-->
+    <attribute name="Architecture" type="string"/>
+    <attribute name="Revision" type="string"/>
+
+<!-- Feature attributes-->
+    <attribute name="Prompt" type="boolean" default="false"></attribute>
+    <attribute name="Type" type="string" default=""></attribute>
+    <attribute name="Depends" type="string" default=""></attribute>
+
+<!-- Select/Default value attributes-->
+	<attribute name="DefaultValue" type="string" default=""></attribute>
+    <attribute name="Target" type="string" default=""></attribute>
+    <attribute name="SelectCondition" type="string" default=""></attribute>
+	<attribute name="FeatureName" type="string" default=""></attribute>
+	<attribute name="DefaultValueCondition" type="string" default=""/>
+
+    <element name="FeatureModel" type="fm:FeatureModelType"/>
+
+    <complexType name="FeatureModelType">
+    	<sequence>
+    		<element ref="fm:Feature" maxOccurs="unbounded" minOccurs="0"/>
+    	</sequence>
+    	<attribute ref="fm:Architecture"/>
+    	<attribute ref="fm:Revision"/>
+    </complexType>
+
+    <element name="Feature" type="fm:FeatureType"/>
+
+    <complexType name="FeatureType">
+    	<sequence>
+    		<element name="DependsReferences" type="string"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="DefaultValues" type="fm:DefaultValueType"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="Select" type="fm:SelectType" minOccurs="0"
+    			maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+        <attribute ref="fm:FeatureName"></attribute>
+        <attribute ref="fm:Type"></attribute>
+    	<attribute ref="fm:Prompt" default="false"></attribute>
+    	<attribute ref="fm:Depends"></attribute>
+    </complexType>
+
+
+    
+    <complexType name="SelectType">
+    	<sequence>
+    		<element name="SelectConditionReferences" type="string"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+        <attribute ref="fm:FeatureName"></attribute>
+        <attribute ref="fm:Target"></attribute>
+    	<attribute ref="fm:SelectCondition"></attribute>
+    </complexType>
+
+
+
+	
+    <element name="Select" type="fm:SelectType"></element>
+
+
+
+    <complexType name="DefaultValueType">
+    	<sequence>
+    		<element name="DefaultConditionReferences" type="string"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="DefaultValueReferences" type="string" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute ref="fm:FeatureName"></attribute>
+        <attribute ref="fm:DefaultValue"></attribute>
+    	<attribute ref="fm:DefaultValueCondition"></attribute>
+    </complexType>
+
+    
+    
+</schema>

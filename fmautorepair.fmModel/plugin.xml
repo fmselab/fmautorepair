@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated FeatureModelSchema -->
+      <package
+            uri="FeatureModelNameSpace"
+            class="feature.model.name.space.SpacePackage"
+            genModel="model/FeatureModelSchema.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated FeatureModelSchema -->
+      <parser
+            type="space"
+            class="feature.model.name.space.util.SpaceResourceFactoryImpl"/>
+   </extension>
+
+</plugin>

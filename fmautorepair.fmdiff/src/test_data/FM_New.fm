@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fm:FeatureModel xmlns:fm="FeatureModelNameSpace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="FeatureModelNameSpace ../../models/FeatureModelSchema.xsd ">
+  <fm:Feature fm:DefaultValue="y" fm:DefaultValue_Condition="FEATURE_1" fm:DependsOn="FEATURE_2 &amp;&amp; FEATURE 3 || FEATURE_4" fm:FeatureName="MyFirstFeature" fm:Prompt="true" fm:Type="tristate"/>
+</fm:FeatureModel>

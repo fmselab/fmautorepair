@@ -1,0 +1,5 @@
+
+Item	FEATURE_2	boolean
+Default	FEATURE_2	"y"
+Depends	FEATURE_2	"FEATURE_1 & SOME_OTHER"
+ItemSelects	FEATURE_2	"FB_SYS_FILLRECT"

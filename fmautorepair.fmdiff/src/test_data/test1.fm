@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fm:FeatureModel fm:Architecture="X86" fm:Revision="3.8-rc1" xmlns:fm="FeatureModelNameSpace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="FeatureModelNameSpace FeatureModelSchema.xsd">
+	<fm:Feature fm:FeatureName="Test"/>
+</fm:FeatureModel>
+
