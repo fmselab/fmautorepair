@@ -4,12 +4,12 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/fmautorepair.fmModel"/>
-	<classpathentry kind="lib" path="src/libs/com.google.guava_11.0.2.v201303041551.jar"/>
-	<classpathentry kind="lib" path="src/libs/com.mysql.jdbc_5.1.5.jar"/>
-	<classpathentry kind="lib" path="src/libs/org.eclipse.emf.common_2.8.0.v20130125-0546.jar"/>
-	<classpathentry kind="lib" path="src/libs/org.eclipse.emf.compare_3.0.0.201306041352.jar"/>
-	<classpathentry kind="lib" path="src/libs/org.eclipse.emf.ecore_2.8.3.v20130125-0546.jar"/>
-	<classpathentry kind="lib" path="src/libs/org.eclipse.emf.ecore.xmi_2.8.1.v20130125-0546.jar"/>
-	<classpathentry kind="lib" path="src/libs/org.eclipse.xsd_2.8.1.v20130125-0826.jar"/>
+	<classpathentry kind="lib" path="libs/com.google.guava_11.0.2.v201303041551.jar"/>
+	<classpathentry kind="lib" path="libs/com.mysql.jdbc_5.1.5.jar"/>
+	<classpathentry kind="lib" path="libs/org.eclipse.emf.common_2.8.0.v20130125-0546.jar"/>
+	<classpathentry kind="lib" path="libs/org.eclipse.emf.compare_3.0.0.201306041352.jar"/>
+	<classpathentry kind="lib" path="libs/org.eclipse.emf.ecore_2.8.3.v20130125-0546.jar"/>
+	<classpathentry kind="lib" path="libs/org.eclipse.emf.ecore.xmi_2.8.1.v20130125-0546.jar"/>
+	<classpathentry kind="lib" path="libs/org.eclipse.xsd_2.8.1.v20130125-0826.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
