@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
+import fmautorepair.mutationoperators.Consts;
 import fmautorepair.mutationoperators.FMMutation;
 import fmautorepair.utils.CollectionsUtil;
 import fmautorepair.utils.Pair;
@@ -19,7 +20,7 @@ import fmautorepair.utils.Utils;
 public class ConstraintRermoverTest {
 	@Test
 	public void testMutate() throws FileNotFoundException, UnsupportedModelException {
-		IFeatureModel fm = Utils.readModel("models/model_and.xml");
+		IFeatureModel fm = Utils.readModel(Consts.EXAMPLE_DIR + "models/model_and.xml");
 		List<FMMutation> res = CollectionsUtil.listFromIterator(ConstraintRemover.instance.mutate(fm));
 		// only one mutation
 		assertEquals(1, res.size());

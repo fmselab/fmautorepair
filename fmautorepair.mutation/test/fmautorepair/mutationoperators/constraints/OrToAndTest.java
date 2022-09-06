@@ -14,6 +14,7 @@ import org.prop4j.NodeToString;
 import de.ovgu.featureide.fm.core.base.IConstraint;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
+import fmautorepair.mutationoperators.Consts;
 import fmautorepair.mutationoperators.FMMutation;
 import fmautorepair.utils.CollectionsUtil;
 import fmautorepair.utils.Pair;
@@ -22,7 +23,7 @@ import fmautorepair.utils.Utils;
 public class OrToAndTest  {
 		@Test
 		public void testMutate() throws FileNotFoundException, UnsupportedModelException {
-			IFeatureModel fm = Utils.readModel("models/model_or.xml");
+			IFeatureModel fm = Utils.readModel(Consts.EXAMPLE_DIR + "models/model_or.xml");
 			List<FMMutation> res = CollectionsUtil.listFromIterator(LogicOrToAnd.instance.mutate(fm));
 			// only one mutation
 			assertEquals(1, res.size());

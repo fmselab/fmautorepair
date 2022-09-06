@@ -43,14 +43,10 @@ public class Utils{
 	}
 
 	static public IFeatureModel readModel(String path) throws FileNotFoundException, UnsupportedModelException {
+		assert new File(path).exists();
 		assert FeatureModelManager.isFileSupported(new File(path).toPath());
 		IFeatureModel fh = FeatureModelManager.load(new File(path).toPath());
 		return fh;
-//		final IFeatureModel fm_original = DefaultFeatureModelFactory.getInstance().create();
-//		XmlFeatureModelFormat format = new XmlFeatureModelFormat();
-//		FileHandler.load(new File(path).toPath(), fm_original, format);
-//		return fm_original;
-
 	}
 
 	public static Set<String> getFeatureNames(IFeatureModel fm) {
