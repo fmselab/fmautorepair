@@ -7,9 +7,10 @@ import java.util.Set;
 import org.prop4j.Literal;
 import org.prop4j.Node;
 
-import de.ovgu.featureide.fm.core.Constraint;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IConstraint;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.mutationoperators.FMMutator;
+import fmautorepair.utils.Utils;
 
 public class LiteralChanger extends ConstraintsMutator {
 
@@ -23,11 +24,11 @@ public class LiteralChanger extends ConstraintsMutator {
 	}
 
 	@Override
-	protected Node modify(Constraint c, FeatureModel fm2) {
-		Set<String> namesSet = fm2.getFeatureNames();
+	protected Node modify(IConstraint  c, IFeatureModel fm2) {
+		Set<String> namesSet = Utils.getFeatureNames(fm2);
 		ArrayList<String> names = new ArrayList<String>(namesSet);
 		// remove the root
-		names.remove(fm2.getRoot().getName());
+		names.remove(fm2.getStructure().getRoot().getFeature().getName());
 		//
 		Node[] children = c.getNode().getChildren();
 		if (children == null)
@@ -43,7 +44,7 @@ public class LiteralChanger extends ConstraintsMutator {
 	}
 
 	@Override
-	protected boolean isModifiable(Constraint c) {
+	protected boolean isModifiable(IConstraint  c) {
 		// TODO Auto-generated method stub
 		return true;
 	}

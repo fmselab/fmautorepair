@@ -5,8 +5,8 @@ import org.prop4j.And;
 import org.prop4j.Node;
 import org.prop4j.Or;
 
-import de.ovgu.featureide.fm.core.Constraint;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IConstraint;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.mutationoperators.FMMutator;
 
 public class LogicAndToOr  extends ConstraintsMutator {
@@ -17,14 +17,14 @@ public class LogicAndToOr  extends ConstraintsMutator {
 		}
 
 		@Override
-		protected Node modify(Constraint c, FeatureModel fm2) {
+		protected Node modify(IConstraint  c, IFeatureModel fm2) {
 			
 			Node or= new Or(((And) c.getNode()).getChildren());
 			return or;
 		}
 
 		@Override
-		protected boolean isModifiable(Constraint c) {
+		protected boolean isModifiable(IConstraint  c) {
 			if (!(c.getNode() instanceof And))
 				return false;
 			

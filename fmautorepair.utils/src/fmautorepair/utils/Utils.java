@@ -2,14 +2,19 @@ package fmautorepair.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
-import de.ovgu.featureide.fm.core.io.AbstractFeatureModelReader;
-import de.ovgu.featureide.fm.core.io.FeatureModelReaderIFileWrapper;
+import de.ovgu.featureide.fm.core.FeatureModelAnalyzer;
+import de.ovgu.featureide.fm.core.base.IConstraint;
+import de.ovgu.featureide.fm.core.base.IFeature;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
+import de.ovgu.featureide.fm.core.base.impl.DefaultFeatureModelFactory;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
-import de.ovgu.featureide.fm.core.io.guidsl.GuidslReader;
-import de.ovgu.featureide.fm.core.io.sxfm.SXFMReader;
-import de.ovgu.featureide.fm.core.io.xml.XmlFeatureModelReader;
+import de.ovgu.featureide.fm.core.io.manager.FileHandler;
+import de.ovgu.featureide.fm.core.io.sxfm.SXFMFormat;
+import de.ovgu.featureide.fm.core.io.xml.XmlFeatureModelFormat;
 import splar.core.fm.FeatureModelException;
 import splar.core.fm.FeatureModelStatistics;
 import splar.core.fm.XMLFeatureModel;
@@ -17,29 +22,22 @@ import splar.core.fm.XMLFeatureModel;
 /** fmautorepair.utils to read models */
 public class Utils{
 
-	/** read models from the model project */
-	
-	static public FeatureModel readModel(String path) throws FileNotFoundException, UnsupportedModelException {
-		FeatureModel fm = new FeatureModel();
-		AbstractFeatureModelReader reader = new XmlFeatureModelReader(fm);
-		reader.readFromFile(new File(path));
-		return fm;
+	static public IFeatureModel readSPLOTModel(String path) throws FileNotFoundException, UnsupportedModelException {
+		// see
+		// https://github.com/FeatureIDE/FeatureIDE/blob/develop/tests/de.ovgu.featureide.fm.core-test/src/de/ovgu/featureide/fm/core/io/sxfm/Experiment_ConvertSPLOTmodels.java
+		// read the same SPLOT file using the FeatureiDE reader
+		final IFeatureModel fm_original = DefaultFeatureModelFactory.getInstance().create();
+		SXFMFormat format = new SXFMFormat();
+//		final ProblemList problems = 
+		FileHandler.load(new File(path).toPath(), fm_original, format);
+		return fm_original;
 	}
 
-	static public FeatureModel readSPLOTModel(String path) throws FileNotFoundException, UnsupportedModelException {
-		FeatureModel fm = new FeatureModel();
-		AbstractFeatureModelReader reader = new SXFMReader(fm);
-		reader.readFromFile(new File(path));
-		return fm;
-
-	}
-
-	static public FeatureModel readSGUIDSL(String path) throws FileNotFoundException, UnsupportedModelException {
-		FeatureModel fm = new FeatureModel();
-		GuidslReader guidslReader = new GuidslReader(fm);
-		FeatureModelReaderIFileWrapper reader = new FeatureModelReaderIFileWrapper(guidslReader);
-		reader.readFromFile(new File(path));
-		return fm;
+	static public IFeatureModel readModel(String path) throws FileNotFoundException, UnsupportedModelException {
+		final IFeatureModel fm_original = DefaultFeatureModelFactory.getInstance().create();
+		XmlFeatureModelFormat format = new XmlFeatureModelFormat();
+		FileHandler.load(new File(path).toPath(), fm_original, format);
+		return fm_original;
 
 	}
 
@@ -48,16 +46,48 @@ public class Utils{
 		// www.splot-research.org for details)
 		// If an identifier is not provided for a feature use the feature name
 		// as id
-		splar.core.fm.FeatureModel featureModel = new XMLFeatureModel(featureModelPath,
+		splar.core.fm.FeatureModel IFeatureModel = new XMLFeatureModel(featureModelPath,
 				XMLFeatureModel.USE_VARIABLE_NAME_AS_ID);
 		// load feature model from
-		featureModel.loadModel();
+		IFeatureModel.loadModel();
 		// Now, let's print some statistics about the feature model
-		FeatureModelStatistics stats = new FeatureModelStatistics(featureModel);
+		FeatureModelStatistics stats = new FeatureModelStatistics(IFeatureModel);
 		stats.update();
 
 		// stats.dump();
-		return featureModel;
+		return IFeatureModel;
+	}
+
+	public static Set<String> getFeatureNames(IFeatureModel fm) {
+		Set<String> fnames = new HashSet<>();
+		for (IFeature a : fm.getFeatures())
+			fnames.add(a.getName());
+		return fnames;
+	}
+
+	/**
+	 * If the candidate has no dead features, no redundant constraints
+	 * 
+	 * @param candidate the candidate mutated model
+	 * @return if the mutation is valid
+	 */
+	public static boolean isOk(IFeatureModel candidate) {
+		FeatureModelAnalyzer analyzer = new FeatureModelAnalyzer(candidate);
+		List<IConstraint> redConstraints = analyzer.getRedundantConstraints(null);
+		if (!redConstraints.isEmpty()) {
+			return false;
+		}
+		if (analyzer.getDeadFeatures(null).size() > 0) {
+			// System.out.println("Dead features:
+			// "+candidate.model.getAnalyser().getDeadFeatures().size());
+			return false;
+		}
+//			for (IConstraint ctr : candidate.getConstraints()) {
+//				if (ctr.getConstraintAttribute()==ConstraintAttribute.REDUNDANT) {
+//					return false;
+//				}
+//			}
+		return true;
 	}
 
 }

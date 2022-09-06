@@ -14,9 +14,11 @@ import org.prop4j.Node;
 import org.prop4j.Not;
 import org.prop4j.Or;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.FeatureUtils;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.mutationoperators.FMMutation;
 import fmautorepair.mutationoperators.FMMutator;
+import fmautorepair.utils.Utils;
 
 // 
 public class ConstraintAdder extends FMMutator {
@@ -31,8 +33,8 @@ public class ConstraintAdder extends FMMutator {
 	static Random random = new Random(2);
 
 	@Override
-	public Iterator<FMMutation> mutate(FeatureModel fm) {
-		FeatureModel fm2 = fm.deepClone();
+	public Iterator<FMMutation> mutate(IFeatureModel fm) {
+		IFeatureModel fm2 = fm.clone();
 		ArrayList<FMMutation> list = null;
 		generateConstraints(fm2, random, 1);
 		list = new ArrayList<>();
@@ -40,13 +42,13 @@ public class ConstraintAdder extends FMMutator {
 		return list.iterator();
 	}
 
-	void generateConstraints(FeatureModel fm, Random random, int numberOfConstraints) {
+	void generateConstraints(IFeatureModel fm, Random random, int numberOfConstraints) {
 
-		Set<String> namesSet = fm.getFeatureNames();
-		// copy the feature names
+		Set<String> namesSet = Utils.getFeatureNames(fm);
+		// copy the IFeature names
 		ArrayList<String> names = new ArrayList<String>(namesSet);
 		// remove the root
-		names.remove(fm.getRoot().getName());
+		names.remove(fm.getStructure().getRoot().getFeature().getName());
 		logger.debug("adding a constraint names of features " + names);
 		//
 		for (int i = 0; i < numberOfConstraints; i++) {
@@ -70,7 +72,7 @@ public class ConstraintAdder extends FMMutator {
 					node = new Not(node);
 				} 
 			}
-			fm.addPropositionalNode(node);
+			FeatureUtils.addPropositionalNode(fm, node);
 		}
 
 	}

@@ -13,9 +13,10 @@ import org.prop4j.Node;
 import org.prop4j.Not;
 import org.prop4j.Or;
 
-import de.ovgu.featureide.fm.core.Constraint;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IConstraint;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.mutationoperators.FMMutator;
+import fmautorepair.utils.Utils;
 
 public class ConstraintSubstitute extends ConstraintsMutator {
 	public static FMMutator instance = new ConstraintSubstitute();
@@ -34,13 +35,13 @@ public class ConstraintSubstitute extends ConstraintsMutator {
 		return new Literal(names.get(index), random.nextBoolean());
 	}
 
-	Node generateConstraints(FeatureModel fm, Random random, int numberOfConstraints) {
+	Node generateConstraints(IFeatureModel fm, Random random, int numberOfConstraints) {
 		Node node = null;
-		Set<String> namesSet = fm.getFeatureNames();
-		// copy the feature names 
+		Set<String> namesSet = Utils.getFeatureNames(fm);
+		// copy the IFeature names 
 		ArrayList<String> names = new ArrayList<String>(namesSet);
 		// remove the root
-		names.remove(fm.getRoot().getName());
+		names.remove(fm.getStructure().getRoot().getFeature().getName());
 		for (int i = 0; i < numberOfConstraints; i++) {
 			node = getRandomLiteral(names, random);
 
@@ -66,7 +67,7 @@ public class ConstraintSubstitute extends ConstraintsMutator {
 	}
 
 	@Override
-	protected Node modify(Constraint c, FeatureModel fm2) {
+	protected Node modify(IConstraint  c, IFeatureModel fm2) {
 
 		Node node = generateConstraints(fm2, random, 1);
 		return node;
@@ -74,7 +75,7 @@ public class ConstraintSubstitute extends ConstraintsMutator {
 	}
 
 	@Override
-	protected boolean isModifiable(Constraint c) {
+	protected boolean isModifiable(IConstraint  c) {
 		// TODO Auto-generated method stub
 		return true;
 	}

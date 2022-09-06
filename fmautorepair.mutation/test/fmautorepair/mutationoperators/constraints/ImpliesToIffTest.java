@@ -11,18 +11,17 @@ import org.junit.Test;
 import org.prop4j.Equals;
 import org.prop4j.NodeToString;
 
-import de.ovgu.featureide.fm.core.Constraint;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IConstraint;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
-import fmautorepair.mutationoperators.constraints.ImpliesToIff;
 import fmautorepair.utils.CollectionsUtil;
 import fmautorepair.utils.Utils;
 
 public class ImpliesToIffTest {
 	@Test
 	public void testMutate() throws FileNotFoundException, UnsupportedModelException {
-		FeatureModel fm = Utils.readModel("models/model_requires.xml");
+		IFeatureModel fm = Utils.readModel("models/model_requires.xml");
 		List<FMMutation> res = CollectionsUtil.listFromIterator(ImpliesToIff.instance.mutate(fm));
 		// only one mutation
 		assertEquals(1, res.size());
@@ -32,8 +31,8 @@ public class ImpliesToIffTest {
 		FMMutation fmm = res.get(0);
 		assertNotSame(fmm, fm);
 		//
-		FeatureModel fmmm = fmm.getFirst();
-		List<Constraint> cc = fmmm.getConstraints();
+		IFeatureModel fmmm = fmm.getFirst();
+		List<IConstraint> cc = fmmm.getConstraints();
 		assertTrue(cc.size() == 1);
 		assertTrue(cc.get(0).getNode() instanceof Equals);
 		System.out.println(NodeToString.nodeToStrings((cc.get(0).getNode())));

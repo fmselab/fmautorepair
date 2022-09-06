@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.mutationoperators.FMMutation;
 import fmautorepair.mutationoperators.FMMutator;
 import fmautorepair.mutationoperators.constraints.ConstraintAdder;
@@ -84,7 +84,7 @@ public class FMMutationProcess {
 	 * @param fmModel the fm model
 	 * @return the all mutants
 	 */
-	public static Iterator<FMMutation> getAllMutants(FeatureModel fmModel) {
+	public static Iterator<FMMutation> getAllMutants(IFeatureModel fmModel) {
 		List<Iterator<FMMutation>> imutations = new ArrayList<>();
 		for (FMMutator mutop : FMMutationProcess.allMutationOperators()) {
 			imutations.add(mutop.mutate(fmModel));
@@ -99,7 +99,7 @@ public class FMMutationProcess {
 	 * @return the iterator of the mutation in random order for the first order
 	 */
 	public static Iterator<FMMutation> getAllMutantsRndOrderFOM(
-			FeatureModel fmModel) {
+			IFeatureModel fmModel) {
 		List<Iterator<FMMutation>> imutations = new ArrayList<>();
 		for (FMMutator mutop : FMMutationProcess.allMutationOperators()) {
 			imutations.add(mutop.mutate(fmModel));
@@ -116,7 +116,7 @@ public class FMMutationProcess {
 	 *         second one
 	 */
 	public static Iterator<FMMutation> getAllMutantsRndOrderHOM2(
-			FeatureModel fmModel) {
+			IFeatureModel fmModel) {
 		FMMutator[] mutators = FMMutationProcess.allMutationOperators();
 		
 		// costruisco tutte quelle del primo ordine come lista
@@ -132,7 +132,7 @@ public class FMMutationProcess {
 		}
  		for(FMMutation m: all1ordermutations) {
 			int indexMutator = mutOpClass.indexOf(m.getMutationClass());
-			FeatureModel firstOrderMutant = m.getFirst();
+			IFeatureModel firstOrderMutant = m.getFirst();
 			for (int i = indexMutator; i < mutators.length; i++) {
 				Iterator<FMMutation> itSomMutations = mutators[i].mutate(firstOrderMutant);
 				//List<FMMutation> somMutations = CollectionsUtil.listFromIterator(itSomMutations);
@@ -154,7 +154,7 @@ public class FMMutationProcess {
 	 * @return the all mutants rnd order ho m2in order
 	 */
 	public static Iterator<FMMutation> getAllMutantsRndOrderHOM2inOrder(
-			FeatureModel fmModel) {
+			IFeatureModel fmModel) {
 		FMMutator[] mutators = FMMutationProcess.allMutationOperators();
 		
 		// costruisco tutte quelle del primo ordine come lista
@@ -170,7 +170,7 @@ public class FMMutationProcess {
  		while (a.hasNext()) {
  			FMMutation m = a.next();
 			int indexMutator = mutOpClass.indexOf(m.getMutationClass());
-			FeatureModel firstOrderMutant = m.getFirst();
+			IFeatureModel firstOrderMutant = m.getFirst();
 			for (int i = indexMutator; i < mutators.length; i++) {
 				Iterator<FMMutation> itSomMutations = mutators[i].mutate(firstOrderMutant);
 				//List<FMMutation> somMutations = CollectionsUtil.listFromIterator(itSomMutations);
@@ -195,7 +195,7 @@ public class FMMutationProcess {
 	 * @return the maximum n mutants randomly selected
 	 */
 	public static Iterator<FMMutation> getSomeMutants(
-			final FeatureModel fmModel, final int n) {
+			final IFeatureModel fmModel, final int n) {
 
 		return new Iterator<FMMutation>() {
 			int i = 0;

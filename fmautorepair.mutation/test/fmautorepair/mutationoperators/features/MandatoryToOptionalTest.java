@@ -4,20 +4,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.beans.Expression;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 import org.prop4j.Node;
 
-import de.ovgu.featureide.fm.core.Feature;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeature;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.editing.NodeCreator;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
-import fmautorepair.mutationoperators.features.MandatoryToOptional;
 import fmautorepair.utils.CollectionsUtil;
 import fmautorepair.utils.Utils;
 
@@ -27,38 +24,38 @@ public class MandatoryToOptionalTest {
 	@Test
 	public void testFalseMandatory() throws FileNotFoundException,
 			UnsupportedModelException {
-		FeatureModel fmodel = Utils.readModel("models/modelfman.xml");
+		IFeatureModel fmodel = Utils.readModel("models/modelfman.xml");
 		// a1 is mandatory ma non reale (non mutare)
-		Feature a1 = fmodel.getFeature("a1");
+		IFeature a1 = fmodel.getFeature("a1");
 		assertTrue(a1.isMandatory());
 		assertFalse(MandatoryToOptional.isTrueMandatory(a1));
 		// B is mandatory reale (da mutare)
-		Feature B = fmodel.getFeature("B");
+		IFeature B = fmodel.getFeature("B");
 		assertTrue(B.isMandatory());
 		assertTrue(MandatoryToOptional.isTrueMandatory(B));
 		// f is optional
-		Feature f = fmodel.getFeature("f");
+		IFeature f = fmodel.getFeature("f");
 		assertFalse(f.isMandatory());
 		// d is mandatory reale (da mutare)
-		Feature d = fmodel.getFeature("d");
+		IFeature d = fmodel.getFeature("d");
 		assertTrue(d.isMandatory());
 		assertTrue(MandatoryToOptional.isTrueMandatory(d));
 		//
-		Feature c1 = fmodel.getFeature("c1");
+		IFeature c1 = fmodel.getFeature("c1");
 		assertTrue(c1.isMandatory());
 		assertFalse(MandatoryToOptional.isTrueMandatory(c1));
-		Feature c2 = fmodel.getFeature("c2");
+		IFeature c2 = fmodel.getFeature("c2");
 		assertTrue(c2.isMandatory());
 		assertFalse(MandatoryToOptional.isTrueMandatory(c2));
-		Feature g = fmodel.getFeature("g");
+		IFeature g = fmodel.getFeature("g");
 		assertTrue(g.isMandatory());
 		assertFalse(MandatoryToOptional.isTrueMandatory(g));
 		// i is mandatoria reale
-		Feature i = fmodel.getFeature("i");
+		IFeature i = fmodel.getFeature("i");
 		assertTrue(i.isMandatory());
 		assertTrue(MandatoryToOptional.isTrueMandatory(i));
 		// w is not mandatory
-		Feature w = fmodel.getFeature("w");
+		IFeature w = fmodel.getFeature("w");
 		assertTrue(w.isMandatory());
 		assertFalse(MandatoryToOptional.isTrueMandatory(w));
 	}

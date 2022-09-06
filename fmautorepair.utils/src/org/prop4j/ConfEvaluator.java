@@ -3,7 +3,7 @@ package org.prop4j;
 import java.util.Arrays;
 import java.util.Set;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.editing.NodeCreator;
 
@@ -23,14 +23,17 @@ public class ConfEvaluator {
 		selectedFeatureNames = conf.getSelectedFeatureNames();
 	}
 
-	public Boolean isValidForModel(FeatureModel fm) {
+	public Boolean isValidForModel(IFeatureModel fm) {
 		// avoid the use of eliminate which has some problems
 		Node node = NodeCreator.createNodes(fm);// .eliminate(Choose.class,
 												// AtMost.class,AtLeast.class);
 
 		// System.err.println(node);
 		// return nodeToBoolean(node);
-		return fm.getFeatureNames().containsAll(selectedFeatureNames) && nodeToBoolean(node);
+		assert false;
+		// TODO fix this (old code with old lib for featireide)
+		//return fm.getFeatureNames().containsAll(selectedFeatureNames) && nodeToBoolean(node);
+		return null;
 	}
 
 	private Boolean getLiteralValue(Literal n) {

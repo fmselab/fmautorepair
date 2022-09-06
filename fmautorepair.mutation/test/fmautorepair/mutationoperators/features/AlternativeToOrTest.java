@@ -9,10 +9,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
-import fmautorepair.mutationoperators.features.AlternativeToOr;
 import fmautorepair.utils.CollectionsUtil;
 import fmautorepair.utils.Pair;
 import fmautorepair.utils.Utils;
@@ -22,7 +21,7 @@ public class AlternativeToOrTest {
 
 	@Test
 	public void test() throws FileNotFoundException, UnsupportedModelException {
-		FeatureModel fm = Utils.readModel("models/model1fi.xml");
+		IFeatureModel fm = Utils.readModel("models/model1fi.xml");
 		assertTrue(fm.getRoot().isAlternative());
 		List<FMMutation> res = CollectionsUtil.listFromIterator(AlternativeToOr.instance.mutate(fm));
 		// only one mutation
@@ -30,7 +29,7 @@ public class AlternativeToOrTest {
 		// the original is not mutated
 		assertTrue(fm.getRoot().toString() + " " + fm.getRoot().isAnd() + " " + fm.getRoot().isOr(), fm.getRoot().isAlternative());
 		// the mutated is 
-		Pair<FeatureModel, String> fmm = res.get(0);
+		Pair<IFeatureModel, String> fmm = res.get(0);
 		assertNotSame(fmm, fm);
 		assertEquals(fmm.toString(), "model",fmm.getFirst().getRoot().getName());
 		assertTrue(fmm.toString(), fmm.getFirst().getRoot().isOr());

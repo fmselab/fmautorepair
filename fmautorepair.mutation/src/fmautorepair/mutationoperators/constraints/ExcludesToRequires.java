@@ -6,15 +6,15 @@ import org.prop4j.Literal;
 import org.prop4j.Node;
 import org.prop4j.Not;
 
-import de.ovgu.featureide.fm.core.Constraint;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IConstraint;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.mutationoperators.FMMutator;
 
 public class ExcludesToRequires extends ConstraintsMutator {
 	public static FMMutator instance = new ExcludesToRequires();
 
 	@Override
-	protected Node modify(Constraint c, FeatureModel fm2) {
+	protected Node modify(IConstraint  c, IFeatureModel fm2) {
 		Node requires = null;
 		// not a1 and a2
 		Node[] subnodes = ((Implies) c.getNode()).getChildren();
@@ -25,7 +25,7 @@ public class ExcludesToRequires extends ConstraintsMutator {
 	}
 
 	@Override
-	protected boolean isModifiable(Constraint c) {
+	protected boolean isModifiable(IConstraint  c) {
 		// a implies not b
 		if (!(c.getNode() instanceof Implies))
 			return false;

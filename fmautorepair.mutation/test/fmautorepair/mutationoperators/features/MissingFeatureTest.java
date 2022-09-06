@@ -8,11 +8,10 @@ import java.util.Iterator;
 import org.junit.Test;
 import org.prop4j.Node;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.editing.NodeCreator;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
-import fmautorepair.mutationoperators.features.MissingFeature;
 import fmautorepair.utils.Utils;
 
 public class MissingFeatureTest {
@@ -20,7 +19,7 @@ public class MissingFeatureTest {
 	@Test
 	public void testMutateFeatureModelFeature() throws FileNotFoundException,
 			UnsupportedModelException {
-		FeatureModel fmodel = Utils
+		IFeatureModel fmodel = Utils
 				.readSPLOTModel("splotmodels_new/model_20091129_1734444143.xml");
 		assertNotNull(fmodel);
 		Node original = NodeCreator.createNodes(fmodel);

@@ -2,8 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="/fmautorepair.libs/featureide_fm_core.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="/fmautorepair.libs/log4j.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/fmautorepair.utils"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
@@ -12,5 +15,6 @@
 	<classpathentry kind="lib" path="/fmautorepair.libs/org.eclipse.core.runtime-3.10.0.v20140318-2214.jar"/>
 	<classpathentry kind="lib" path="/fmautorepair.libs/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
 	<classpathentry kind="lib" path="/fmautorepair.libs/org.eclipse.core.resources-3.9.0.v20140514-1307.jar"/>
+	<classpathentry kind="lib" path="/fmautorepair.libs/de.ovgu.featureide.lib.fm-v3.8.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

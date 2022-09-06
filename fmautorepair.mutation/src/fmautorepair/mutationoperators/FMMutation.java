@@ -1,9 +1,9 @@
 package fmautorepair.mutationoperators;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.utils.Pair;
 
-public class FMMutation extends Pair<FeatureModel, String> {
+public class FMMutation extends Pair<IFeatureModel, String> {
 
 	/**
 	 * 
@@ -15,7 +15,7 @@ public class FMMutation extends Pair<FeatureModel, String> {
 	 */
 	private Class<? extends FMMutator> mutationClass = null;
 
-	public FMMutation(FeatureModel s, Class<? extends FMMutator> mutationClass, String a) {
+	public FMMutation(IFeatureModel s, Class<? extends FMMutator> mutationClass, String a) {
 		super(s, a);
 		this.mutationClass = mutationClass;
 	}

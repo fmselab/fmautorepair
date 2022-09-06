@@ -2,8 +2,8 @@ package fmautorepair.mutationoperators.features;
 
 import org.apache.log4j.Logger;
 
-import de.ovgu.featureide.fm.core.Feature;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeature;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.mutationoperators.FMMutator;
 
 /** transform alternative to or */
@@ -15,17 +15,17 @@ public class OrToAltenative extends FeatureMutator {
 	public static FMMutator instance = new OrToAltenative();
 
 	@Override
-	String mutate(FeatureModel fm, Feature feature) {
-		assert feature.isOr();
-		feature.changeToAlternative();
-		logger.info("mutating feature " + feature.getName()
+	String mutate(IFeatureModel fm, IFeature feature) {
+		assert feature.getStructure().isOr();
+		feature.getStructure().changeToAlternative();
+		logger.info("mutating IFeature " + feature.getName()
 				+ " from OR to Alternative");
 		return (feature.getName() + " from OR TO ALTERNATIVE");
 	}
 
 	@Override
-	boolean isMutable(FeatureModel fm, Feature tobemutated) {
+	boolean isMutable(IFeatureModel fm, IFeature tobemutated) {
 		// accettiamo solo con piu' di un figlio
-		return (tobemutated.isOr() && tobemutated.getChildren().size() >0);
+		return (tobemutated.getStructure().isOr() && tobemutated.getStructure().getChildren().size() >0);
 	}
 }

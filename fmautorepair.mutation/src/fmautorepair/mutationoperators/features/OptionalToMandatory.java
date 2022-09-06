@@ -2,8 +2,8 @@ package fmautorepair.mutationoperators.features;
 
 import org.apache.log4j.Logger;
 
-import de.ovgu.featureide.fm.core.Feature;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeature;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.mutationoperators.FMMutator;
 
 /** optional to mandatory */
@@ -15,18 +15,18 @@ public class OptionalToMandatory extends FeatureMutator {
 	public static FMMutator instance = new OptionalToMandatory();
 
 	@Override
-	String mutate(FeatureModel fm, Feature feature) {
-		assert !feature.isMandatory();
-		feature.setMandatory(true);
-		logger.info("mutating feature " + feature.getName()
+	String mutate(IFeatureModel fm, IFeature feature) {
+		assert !feature.getStructure().isMandatory();
+		feature.getStructure().setMandatory(true);
+		logger.info("mutating IFeature " + feature.getName()
 				+ " from OPTIONAL TO MANDATORY");
 		return (feature.getName() + " from OPTIONAL TO MANDATORY");
 	}
 
 	@Override
-	boolean isMutable(FeatureModel fm, Feature tobemutated) {
-		Feature parent= tobemutated.getParent();
-		return (parent != null &&  parent.isAnd()  && !tobemutated.isMandatory());
+	boolean isMutable(IFeatureModel fm, IFeature tobemutated) {
+		IFeature parent= tobemutated.getStructure().getParent().getFeature();
+		return (parent != null &&  parent.getStructure().isAnd()  && !tobemutated.getStructure().isMandatory());
 	}
 
 }

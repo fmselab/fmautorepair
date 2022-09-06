@@ -5,8 +5,8 @@ import org.prop4j.Equals;
 import org.prop4j.Implies;
 import org.prop4j.Node;
 
-import de.ovgu.featureide.fm.core.Constraint;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IConstraint;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.mutationoperators.FMMutator;
 
 public class IffToImplies extends ConstraintsMutator {
@@ -14,7 +14,7 @@ public class IffToImplies extends ConstraintsMutator {
 	public static FMMutator instance = new IffToImplies();
 
 	@Override
-	protected Node modify(Constraint c, FeatureModel fm2) {
+	protected Node modify(IConstraint  c, IFeatureModel fm2) {
 		Node[] subnodes = ((Equals) c.getNode()).getChildren();
 		
 		//  not a1 and a2
@@ -23,7 +23,7 @@ public class IffToImplies extends ConstraintsMutator {
 	}
 
 	@Override
-	protected boolean isModifiable(Constraint c) {
+	protected boolean isModifiable(IConstraint  c) {
 		if (!(c.getNode() instanceof Equals))
 			return false;
 		Node[] subnodes = ((Equals) c.getNode()).getChildren();

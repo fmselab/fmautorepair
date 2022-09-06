@@ -3,8 +3,8 @@ package fmautorepair.mutationoperators.constraints;
 import org.apache.log4j.Logger;
 import org.prop4j.Node;
 
-import de.ovgu.featureide.fm.core.Constraint;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IConstraint;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.mutationoperators.FMMutator;
 
 public class ConstraintRemover extends ConstraintsMutator {
@@ -15,13 +15,13 @@ public class ConstraintRemover extends ConstraintsMutator {
 	}
 
 	@Override
-	protected Node modify(Constraint c, FeatureModel fm2) {
+	protected Node modify(IConstraint  c, IFeatureModel fm2) {
 
 		return null;
 	}
 
 	@Override
-	protected boolean isModifiable(Constraint c) {
+	protected boolean isModifiable(IConstraint  c) {
 		return true;
 	}
 }

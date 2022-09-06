@@ -7,10 +7,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
-import fmautorepair.mutationoperators.features.AlternativeToAndOpt;
 import fmautorepair.utils.CollectionsUtil;
 import fmautorepair.utils.Utils;
 
@@ -20,7 +19,7 @@ public class AlternativeToAndOptTest {
 	@Test
 	public void testMutation() throws FileNotFoundException,
 			UnsupportedModelException {
-		FeatureModel fmodel = Utils.readModel("examples_fmsfrompreprocessor/TKESSPLC11/Figure4_pv3.xml");
+		IFeatureModel fmodel = Utils.readModel("examples_fmsfrompreprocessor/TKESSPLC11/Figure4_pv3.xml");
 		List<FMMutation> res = CollectionsUtil.listFromIterator(AlternativeToAndOpt.instance.mutate(fmodel));
 
 		assertEquals(1,res.size());

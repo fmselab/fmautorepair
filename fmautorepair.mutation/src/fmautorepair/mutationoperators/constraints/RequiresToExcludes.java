@@ -7,8 +7,8 @@ import org.prop4j.Literal;
 import org.prop4j.Node;
 import org.prop4j.Not;
 
-import de.ovgu.featureide.fm.core.Constraint;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IConstraint;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.mutationoperators.FMMutator;
 
 /**
@@ -19,14 +19,14 @@ public class RequiresToExcludes extends ConstraintsMutator {
 	public static FMMutator instance = new RequiresToExcludes();
 
 	@Override
-	protected Node modify(Constraint c, FeatureModel fm2) {
+	protected Node modify(IConstraint  c, IFeatureModel fm2) {
 		// not a1 and a2
 		Node excludes = new Not(new And(((Implies) c.getNode()).getChildren()));
 		return excludes;
 	}
 
 	@Override
-	protected boolean isModifiable(Constraint c) {
+	protected boolean isModifiable(IConstraint  c) {
 		if (!(c.getNode() instanceof Implies))
 			return false;
 		/* consider only literals */
