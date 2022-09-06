@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureStructure;
 import fmautorepair.mutationoperators.FMMutator;
 
 /** optional to mandatory */
@@ -25,8 +26,8 @@ public class OptionalToMandatory extends FeatureMutator {
 
 	@Override
 	boolean isMutable(IFeatureModel fm, IFeature tobemutated) {
-		IFeature parent= tobemutated.getStructure().getParent().getFeature();
-		return (parent != null &&  parent.getStructure().isAnd()  && !tobemutated.getStructure().isMandatory());
+		IFeatureStructure parent= tobemutated.getStructure().getParent();
+		return (parent != null &&  parent.isAnd()  && !tobemutated.getStructure().isMandatory());
 	}
 
 }
