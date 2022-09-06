@@ -10,7 +10,7 @@ import java.util.Random;
 import org.apache.log4j.Logger;
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
@@ -26,7 +26,7 @@ public class AutoremoverFIDE_SOMEq extends AutoremoverFIDE{
 
 	public static AutoremoverFIDEFactory factory =  new AutoremoverFIDEFactory(){
 		@Override
-		public AutoremoverFIDE getAutoremover(FeatureModel fm, OracleFIDE o){
+		public AutoremoverFIDE getAutoremover(IFeatureModel fm, OracleFIDE o){
 			return new AutoremoverFIDE_SOMEq(fm,o);
 		}
 
@@ -36,9 +36,9 @@ public class AutoremoverFIDE_SOMEq extends AutoremoverFIDE{
 		}
 	};
 
-	List<FeatureModel> equivalent;
+	List<IFeatureModel> equivalent;
 
-	protected AutoremoverFIDE_SOMEq(FeatureModel fm, OracleFIDE o) {
+	protected AutoremoverFIDE_SOMEq(IFeatureModel fm, OracleFIDE o) {
 		super(fm, o);
 		equivalent = new ArrayList<>();
 	}
@@ -46,14 +46,14 @@ public class AutoremoverFIDE_SOMEq extends AutoremoverFIDE{
 	static private Logger logger = Logger.getLogger(AutoremoverFIDE_SOMEq.class);
 
 	@Override
-	protected Iterator<FMMutation> getMutants(FeatureModel fmModel) {
+	protected Iterator<FMMutation> getMutants(IFeatureModel fmModel) {
 		// costruisco tutte quelle del primo ordine come lista
 		final Iterator<FMMutation> all1ordermutations = FMMutationProcess.getAllMutantsRndOrderFOM(fmModel);		
 		return new MyIterator(all1ordermutations);
 	}
 	
 	@Override
-	protected Configuration generateDc(FeatureModel candidate, FeatureModel fmP)
+	protected Configuration generateDc(IFeatureModel candidate, IFeatureModel fmP)
 			throws UnsupportedModelException, IOException, TimeoutException {
 		// call the super method
 		Configuration test = super.generateDc(candidate, fmP);
@@ -65,7 +65,7 @@ public class AutoremoverFIDE_SOMEq extends AutoremoverFIDE{
 	}
 	
 	@Override
-	public void setCandidate(FeatureModel candidate) {
+	public void setCandidate(IFeatureModel candidate) {
 		logger.debug("resetting the candidate, empty the equivalent");
 		super.setCandidate(candidate);
 		// reset the equivalent
@@ -123,14 +123,14 @@ public class AutoremoverFIDE_SOMEq extends AutoremoverFIDE{
 				nEqJumps ++;
 				// get one of the equialent (teh first???)
 				if (USE_ONE_EQ){
-					FeatureModel firstEq = equivalent.get(rnd.nextInt(equivalent.size()));
+					IFeatureModel firstEq = equivalent.get(rnd.nextInt(equivalent.size()));
 					logger.debug("considering the second order now starting from " + " n jumps : " + nEqJumps);
 					// get the second orders for this
 					secOrdmutations = FMMutationProcess.getAllMutantsRndOrderFOM(firstEq);
 				} else{
 					List<Iterator<FMMutation>> secondorder = new ArrayList<>();
 					// use all eq
-					for (FeatureModel eq: equivalent){
+					for (IFeatureModel eq: equivalent){
 						secondorder.add(FMMutationProcess.getAllMutantsRndOrderFOM(eq));
 					}
 					secOrdmutations = new JoinedIterator<>(secondorder);

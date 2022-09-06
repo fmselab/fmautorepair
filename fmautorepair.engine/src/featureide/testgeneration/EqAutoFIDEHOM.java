@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import org.prop4j.Node;
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.editing.NodeCreator;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
@@ -24,7 +24,7 @@ public class EqAutoFIDEHOM extends AlgorithmUsingFIDE {
 
 	public static AutoremoverFIDEFactory factory =  new AutoremoverFIDEFactory(){
 		@Override
-		public EqAutoFIDEHOM getAutoremover(FeatureModel fm, OracleFIDE o){
+		public EqAutoFIDEHOM getAutoremover(IFeatureModel fm, OracleFIDE o){
 			return new EqAutoFIDEHOM(fm,o);
 		}
 
@@ -34,7 +34,7 @@ public class EqAutoFIDEHOM extends AlgorithmUsingFIDE {
 		}
 	};
 
-	public EqAutoFIDEHOM(FeatureModel fm, OracleFIDE o) {
+	public EqAutoFIDEHOM(IFeatureModel fm, OracleFIDE o) {
 		super(fm, o);
 	}
 
@@ -59,7 +59,7 @@ public class EqAutoFIDEHOM extends AlgorithmUsingFIDE {
 	 * @throws TimeoutException
 	 */
 	@Override
-	public FeatureModel bestModel() throws UnsupportedModelException,
+	public IFeatureModel bestModel() throws UnsupportedModelException,
 			IOException, TimeoutException {
 		// take alla the mutations
 		// FM4Testgeneration fm4tg = new FM4Testgeneration(candidate, false);
@@ -69,14 +69,14 @@ public class EqAutoFIDEHOM extends AlgorithmUsingFIDE {
 		List<FMMutation> Eqmutants = new ArrayList<FMMutation>();
 		// insieme delle dc cosrtuite finora
 		Set<ConfigurationWithHash> dc = new HashSet<ConfigurationWithHash>();
-		FeatureModel original = getCandidate().deepClone();
+		IFeatureModel original = getCandidate().deepClone();
 		while (mutants.hasNext()) {
 			// System.err.println("ITERATION");
 			// take one
 			FMMutation next = mutants.next();
 			if (next == null)
 				continue; // necessario per errore nel nostro iterator filtered
-			FeatureModel fmP = next.getFirst();
+			IFeatureModel fmP = next.getFirst();
 			logger.debug("dcs: " + dc.size());// +" mutants: " + mutants.size());
 			logger.debug("mutant " + fmP + " mutation " + next.getSecond());
 			// try to kill with existing tests

@@ -3,27 +3,19 @@ package testgeneration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.prop4j.Node;
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.editing.NodeCreator;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
+import fmautorepair.utils.Utils;
 import splar.core.fm.FeatureModelException;
 import splar.core.fm.configuration.ConfigurationEngineException;
-import fmautorepair.utils.Utils;
 
 //@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CompareOracleMutantTest {
@@ -124,8 +116,8 @@ public class CompareOracleMutantTest {
 
 	@Test
 	public void testEqualsNoConstraints() throws FileNotFoundException, UnsupportedModelException {
-		FeatureModel eq1= Utils.readModel("toyExamples/equals1.xml");
-		FeatureModel eq2 = Utils.readModel("toyExamples/equals2.xml");
+		IFeatureModel eq1= Utils.readModel("toyExamples/equals1.xml");
+		IFeatureModel eq2 = Utils.readModel("toyExamples/equals2.xml");
 		
 		System.out.println(eq1.equals(eq2));
 		
@@ -151,8 +143,8 @@ public class CompareOracleMutantTest {
 	} 
 	@Test
 	public void testEqualsConstraints() throws FileNotFoundException, UnsupportedModelException {
-		FeatureModel eq1= Utils.readModel("toyExamples/equals1c.xml");
-		FeatureModel eq2 = Utils.readModel("toyExamples/equals2c.xml");
+		IFeatureModel eq1= Utils.readModel("toyExamples/equals1c.xml");
+		IFeatureModel eq2 = Utils.readModel("toyExamples/equals2c.xml");
 		
 		System.out.println(eq1.equals(eq2));
 		

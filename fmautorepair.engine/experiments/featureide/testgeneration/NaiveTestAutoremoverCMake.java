@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.editing.Comparison;
 import de.ovgu.featureide.fm.core.editing.ModelComparator;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
@@ -50,14 +50,14 @@ public class NaiveTestAutoremoverCMake {
 
 	@Test
 	public void testLibSSH() throws Exception {
-		FeatureModel res = test("models/libssh/libssh_noconstraints.xml");
+		IFeatureModel res = test("models/libssh/libssh_noconstraints.xml");
 		//XmlFeatureModelWriter w = new XmlFeatureModelWriter(res);
 		//w.writeToFile(new File("models/libssh_noconstraints2.xml"));
 	}
 
 	@Test
 	public void testLibSSHRepair1() throws Exception {
-		FeatureModel res = test("models/libssh/libssh_wrong1.xml");
+		IFeatureModel res = test("models/libssh/libssh_wrong1.xml");
 		XmlFeatureModelWriter w = new XmlFeatureModelWriter(res);
 		w.writeToFile(new File("models/libssh_repaired1.xml"));		
 	}
@@ -79,14 +79,14 @@ public class NaiveTestAutoremoverCMake {
 
 	
 	//
-	private FeatureModel test(String model) throws FileNotFoundException, UnsupportedModelException, Exception {
+	private IFeatureModel test(String model) throws FileNotFoundException, UnsupportedModelException, Exception {
 		OracleFidebyCMake oracle = new OracleFidebyCMake("/home/garganti/Downloads/experiments_source_fm/libssh_build",
 				"../libssh");
-		FeatureModel libssh = Utils.readModel(model);
+		IFeatureModel libssh = Utils.readModel(model);
 		AutoremoverFIDECollect autorem = (AutoremoverFIDECollect) AutoremoverFIDECollect.factory.getAutoremover(libssh,
 				oracle);
 
-		FeatureModel result = autorem.bestModel();
+		IFeatureModel result = autorem.bestModel();
 		System.out.println("final result " + result);
 		System.out.println("generated dcs " + autorem.numberOfGeneratedDCs());
 		// compare them

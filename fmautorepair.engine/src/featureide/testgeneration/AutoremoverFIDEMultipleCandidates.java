@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.prop4j.ConfEvaluator;
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
@@ -27,7 +27,7 @@ public class AutoremoverFIDEMultipleCandidates extends AlgorithmUsingFIDE {
 
 	public static AutoremoverFIDEFactory factory =  new AutoremoverFIDEFactory(){
 		@Override
-		public AutoremoverFIDEMultipleCandidates getAutoremover(FeatureModel fm, OracleFIDE o){
+		public AutoremoverFIDEMultipleCandidates getAutoremover(IFeatureModel fm, OracleFIDE o){
 			return new AutoremoverFIDEMultipleCandidates(fm,o);
 		}
 
@@ -37,7 +37,7 @@ public class AutoremoverFIDEMultipleCandidates extends AlgorithmUsingFIDE {
 		}
 	};	
 
-	protected AutoremoverFIDEMultipleCandidates(FeatureModel fm, OracleFIDE o) {
+	protected AutoremoverFIDEMultipleCandidates(IFeatureModel fm, OracleFIDE o) {
 		super(fm, o);
 	}
 
@@ -48,7 +48,7 @@ public class AutoremoverFIDEMultipleCandidates extends AlgorithmUsingFIDE {
 
 	// all these candidates are equally good (the are eual to the oracle the same numebr of times)
 	// but thery are NOT equivalent (if a mutation is equivalent is not added)
-	List<FeatureModel> candidates = new ArrayList<>();
+	List<IFeatureModel> candidates = new ArrayList<>();
 	int scoreCandidates = 0; // number of dcs in which all the candidates concide con l'oracolo 
 	
 	@Override
@@ -68,7 +68,7 @@ public class AutoremoverFIDEMultipleCandidates extends AlgorithmUsingFIDE {
 	 * @throws TimeoutException
 	 */
 	@Override
-	public FeatureModel bestModel() throws UnsupportedModelException, IOException, TimeoutException {
+	public IFeatureModel bestModel() throws UnsupportedModelException, IOException, TimeoutException {
 		for(;;){
 			logger.debug("candidate " + candidates);
 			//
@@ -84,7 +84,7 @@ public class AutoremoverFIDEMultipleCandidates extends AlgorithmUsingFIDE {
 				if (next == null)
 					continue; // necessario per errore nel nostro iterator
 								// filtered
-				FeatureModel fmP = next.getFirst();
+				IFeatureModel fmP = next.getFirst();
 				//logger.debug("dcs: " + dcs.size()+ dcs.toString());// +" mutants:
 																	// " +
 																	// mutants.size());
@@ -96,7 +96,7 @@ public class AutoremoverFIDEMultipleCandidates extends AlgorithmUsingFIDE {
 					ConfigurationWValidity d = DC.get(i);
 					ConfEvaluator ce = new ConfEvaluator(d.getFirst());
 					Boolean validForModel = ce.isValidForModel(fmP);
-					for (FeatureModel c: candidates){
+					for (IFeatureModel c: candidates){
 						// if it is a distinguishing configuration
 						if (validForModel != ce.isValidForModel(c)) {
 							logger.debug("mutant is already distinguished by a configuration by an oracle");
@@ -104,11 +104,11 @@ public class AutoremoverFIDEMultipleCandidates extends AlgorithmUsingFIDE {
 						}
 					}
 				}
-				// se arrivo qui non c'è nessuna dcs che lo distingue (ha validtà uguale a tutti i candidati sulle dcs geneate)
+				// se arrivo qui non c'ï¿½ nessuna dcs che lo distingue (ha validtï¿½ uguale a tutti i candidati sulle dcs geneate)
 				// generate the dc for one canidates
 				// attenzione potrebbe essere equivalente ad un altro candidato.. non av bene	
 				Configuration test = null;
-				for (FeatureModel c: candidates){				
+				for (IFeatureModel c: candidates){				
 					test = generateDc(c, fmP);
 					// non equivalent found
 					if (test != null) break; 
@@ -137,7 +137,7 @@ public class AutoremoverFIDEMultipleCandidates extends AlgorithmUsingFIDE {
 			mutants = getMutants(candidate);
 			boolean betterFound = false;
 			while (mutants.hasNext()) {
-				FeatureModel fm = mutants.next().getFirst();
+				IFeatureModel fm = mutants.next().getFirst();
 				int score = 0;
 				for (ConfigurationWValidity d : DC) {
 					ConfEvaluator ce = new ConfEvaluator(d.getFirst());
@@ -169,7 +169,7 @@ public class AutoremoverFIDEMultipleCandidates extends AlgorithmUsingFIDE {
 		return FMMutationProcess.getAllMutantsRndOrderFOM(candidates.get(random.nextInt(candidates.size())));
 	}
 
-	protected Iterator<FMMutation> getMutants(FeatureModel candidate){
+	protected Iterator<FMMutation> getMutants(IFeatureModel candidate){
 		assert false;
 		return FMMutationProcess.getAllMutantsRndOrderFOM(candidate);
 	}

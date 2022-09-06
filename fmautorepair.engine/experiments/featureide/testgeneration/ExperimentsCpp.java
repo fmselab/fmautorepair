@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +21,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.utils.Utils;
 import splar.core.fm.FeatureModelException;
@@ -158,7 +159,7 @@ public class ExperimentsCpp {
 									&& !file2.getName().contains("oracle")) {
 								String baseXml = file2.getName().substring(0, file2.getName().lastIndexOf('_'));
 								if (baseXml.equals(baseOracle)) {
-									FeatureModel mutant2 = Utils.readModel(file2.getAbsolutePath());
+									IFeatureModel mutant2 = Utils.readModel(file2.getAbsolutePath());
 									if (mutant2.getRoot().isAbstract())
 										mutant2.getRoot().setAbstract(false);
 

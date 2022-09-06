@@ -14,7 +14,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 
@@ -140,7 +140,7 @@ public class OracleFidebyCMake extends OracleFIDE {
 	}
 
 	@Override
-	public FeatureModel getFeatureModel() throws FileNotFoundException,
+	public IFeatureModel getFeatureModel() throws FileNotFoundException,
 			UnsupportedModelException {
 		// TODO Auto-generated method stub
 		return null;

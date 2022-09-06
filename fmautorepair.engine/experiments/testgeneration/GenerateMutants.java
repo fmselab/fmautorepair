@@ -10,7 +10,7 @@ import java.util.Random;
 
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.editing.Comparison;
 import de.ovgu.featureide.fm.core.editing.ModelComparator;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
@@ -43,7 +43,7 @@ public class GenerateMutants {
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.OFF);
 	}
 
-	/*public static Set<MyFMMutation> generateMutantsWithSet(FeatureModel fmodel, int depth, double percSelect) {
+	/*public static Set<MyFMMutation> generateMutantsWithSet(IFeatureModel fmodel, int depth, double percSelect) {
 		assert depth > 0: "depth must be greater than 0 - depth = " + depth;
 		Set<MyFMMutation> currMutants = new HashSet<MyFMMutation>();
 		for(FMMutator mutator: mutators) {
@@ -63,14 +63,14 @@ public class GenerateMutants {
 		}
 		else {
 			for(MyFMMutation currMutant: currMutants) {
-				FeatureModel fmMut = currMutant.getMutation();
+				IFeatureModel fmMut = currMutant.getMutation();
 				mutants.addAll(generateMutantsWithSet(fmMut, depth - 1, percSelect));
 			}
 		}
 		return mutants;
 	}*/
 
-	public static List<FMMutation> generateMutantsNoSet(FeatureModel fmodel, int depth, double percSelect) {
+	public static List<FMMutation> generateMutantsNoSet(IFeatureModel fmodel, int depth, double percSelect) {
 		assert depth > 0: "depth must be greater than 0 - depth = " + depth;
 		assert percSelect > 0 && percSelect <= 1: "percSelect not allowed: " + percSelect;
 		//System.err.println("depth = " + depth);
@@ -98,7 +98,7 @@ public class GenerateMutants {
 			}
 			else {
 				for(FMMutation currMutant: currMutants) {
-					FeatureModel fmMut = currMutant.getFirst();
+					IFeatureModel fmMut = currMutant.getFirst();
 					mutants.addAll(generateMutantsNoSet(fmMut, depth - 1, percSelect));
 				}
 			}
@@ -106,16 +106,16 @@ public class GenerateMutants {
 		return mutants;
 	}
 
-	private static void saveMutatedModel(FeatureModel featureModel, String name, boolean description) throws IOException {
+	private static void saveMutatedModel(IFeatureModel IFeatureModel, String name, boolean description) throws IOException {
 		if(description) {
-			for(String comment: featureModel.getComments()) {
+			for(String comment: IFeatureModel.getComments()) {
 				if(comment.contains(" from ")) {
 					name = name + "_" + comment.replace("mutation ", "").replaceAll(" from ", "_").replaceAll(" ", "");
 				}
 			}
 		}
 		//SXFMWriter writer = new SXFMWriter(mutatedModel);
-		XmlFeatureModelWriter writer = new XmlFeatureModelWriter(featureModel);
+		XmlFeatureModelWriter writer = new XmlFeatureModelWriter(IFeatureModel);
 		//System.out.println(writer.writeToString());
 		FileWriter fw = new FileWriter(new File(name + ".xml"));
 		fw.write(writer.writeToString());
@@ -127,13 +127,13 @@ public class GenerateMutants {
 	}
 
 	public static void removeEquivalents(String model, String folderMutants) throws FileNotFoundException, UnsupportedModelException {
-		FeatureModel fm = Utils.readSPLOTModel(model);
+		IFeatureModel fm = Utils.readSPLOTModel(model);
 		File dir = new File(folderMutants);
 		assert dir.isDirectory();
 		ModelComparator comparator = new ModelComparator(1000000);
 		int counter = 0;
 		for(File file: dir.listFiles()) {
-			FeatureModel mutant = Utils.readModel(file.getAbsolutePath());
+			IFeatureModel mutant = Utils.readModel(file.getAbsolutePath());
 			Comparison comparison = comparator.compare(fm, mutant);
 			if(comparison == Comparison.REFACTORING) {
 				counter++;
@@ -150,11 +150,11 @@ public class GenerateMutants {
 		int counter = 0;
 		for(File file: dir.listFiles()) {
 			if(!file.exists()) continue; 
-			FeatureModel mutant = Utils.readModel(file.getAbsolutePath());
+			IFeatureModel mutant = Utils.readModel(file.getAbsolutePath());
 			File sameDir = new File(folderMutants);
 			for(File file2: sameDir.listFiles()) {
 				if(!file2.getName().equals(file.getName())) {
-					FeatureModel mutant2 = Utils.readModel(file2.getAbsolutePath());
+					IFeatureModel mutant2 = Utils.readModel(file2.getAbsolutePath());
 					Comparison comparison = comparator.compare(mutant, mutant2);
 					if(comparison == Comparison.REFACTORING) {
 						counter++;
@@ -175,7 +175,7 @@ public class GenerateMutants {
 			if(!file.exists()) continue;
 			String fileName = file.getName().replaceAll("depth" + (depth - 1), "depth" + depth);
 			fileName = fileName.substring(0, fileName.length() - 4);
-			FeatureModel fmmodel = Utils.readModel(file.getAbsolutePath());
+			IFeatureModel fmmodel = Utils.readModel(file.getAbsolutePath());
 			List<FMMutation> currMutants = new ArrayList<FMMutation>();
 			for(FMMutator mutator: mutators) {
 				currMutants.addAll(CollectionsUtil.listFromIterator(mutator.mutate(fmmodel)));						
@@ -211,7 +211,7 @@ public class GenerateMutants {
 
 	public static void mutate(String modelPath, int depth, double percMutants) throws IOException, UnsupportedModelException {
 		init();
-		FeatureModel fm = Utils.readSPLOTModel(modelPath);
+		IFeatureModel fm = Utils.readSPLOTModel(modelPath);
 		List<FMMutation> mutants = generateMutantsNoSet(fm, depth, percMutants);
 		System.out.println("all mutants = " + mutants.size());
 		
@@ -232,7 +232,7 @@ public class GenerateMutants {
 		}
 	}
 
-	public static List<FeatureModel> generateNmutants(FeatureModel fmodel, int numMutants, List<FeatureModel> mutants) {
+	public static List<IFeatureModel> generateNmutants(IFeatureModel fmodel, int numMutants, List<IFeatureModel> mutants) {
 		numMutants--;
 		if(numMutants >= 0) {
 			List<FMMutation> currMutants;
@@ -241,7 +241,7 @@ public class GenerateMutants {
 				currMutants = CollectionsUtil.listFromIterator(mutator.mutate(fmodel));
 			}
 			while(currMutants.size() == 0);
-			FeatureModel mutant = currMutants.get(rnd.nextInt(currMutants.size())).getFirst();
+			IFeatureModel mutant = currMutants.get(rnd.nextInt(currMutants.size())).getFirst();
 			mutants.add(mutant);
 			return generateNmutants(mutant, numMutants, mutants);
 		}
@@ -252,8 +252,8 @@ public class GenerateMutants {
 
 	public static void generateNmutants(String modelPath, int numMutants) throws IOException, UnsupportedModelException {
 		init();
-		FeatureModel fm = Utils.readModel(modelPath);
-		List<FeatureModel> mutants = new ArrayList<FeatureModel>();
+		IFeatureModel fm = Utils.readModel(modelPath);
+		List<IFeatureModel> mutants = new ArrayList<IFeatureModel>();
 		generateNmutants(fm, numMutants, mutants);
 
 		String modelName = new File(modelPath).getName();
@@ -264,9 +264,9 @@ public class GenerateMutants {
 	}
 
 	private static void getAdequacy(String oraclePath, String mutantsPath) throws TimeoutException, IOException, FeatureModelException, ConfigurationEngineException, UnsupportedModelException {
-		FeatureModel o = Utils.readModel(oraclePath);
+		IFeatureModel o = Utils.readModel(oraclePath);
 		for(File f: new File(mutantsPath).listFiles()) {
-			FeatureModel m = Utils.readModel(f.getAbsolutePath());
+			IFeatureModel m = Utils.readModel(f.getAbsolutePath());
 			System.out.println(CompareOracleMutantBDD.getConformance(o, m).percConfsJudgedCorrectly());
 		}
 	}
@@ -286,9 +286,9 @@ public class GenerateMutants {
 }
 
 class MyFMMutation {
-	private FeatureModel mutation;
+	private IFeatureModel mutation;
 
-	public MyFMMutation(FeatureModel m) {
+	public MyFMMutation(IFeatureModel m) {
 		mutation = m;
 	}
 
@@ -299,8 +299,8 @@ class MyFMMutation {
 	@Override
 	public boolean equals(Object o) {
 		if(o instanceof MyFMMutation) {
-			FeatureModel fm = mutation;
-			FeatureModel fm2 = ((MyFMMutation)o).mutation;
+			IFeatureModel fm = mutation;
+			IFeatureModel fm2 = ((MyFMMutation)o).mutation;
 			ModelComparator comparator = new ModelComparator(1000000);
 			Comparison comparison = comparator.compare(fm, fm2);
 			return comparison == Comparison.REFACTORING;
@@ -313,7 +313,7 @@ class MyFMMutation {
 		return mutation.hashCode();
 	}
 
-	public FeatureModel getMutation() {
+	public IFeatureModel getMutation() {
 		return mutation;
 	}
 }

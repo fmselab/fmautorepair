@@ -9,7 +9,7 @@ import java.util.List;
 import org.prop4j.FMToBDD;
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.editing.Comparison;
 import de.ovgu.featureide.fm.core.editing.ModelComparator;
 import de.ovgu.featureide.fm.core.editing.NodeCreator;
@@ -26,7 +26,7 @@ import splar.plugins.reasoners.bdd.javabdd.FMReasoningWithBDD;
 
 public class CompareOracleMutantBDD {
 	
-	private static FeatureModel readModel(String modelPath) throws FileNotFoundException, UnsupportedModelException {
+	private static IFeatureModel readModel(String modelPath) throws FileNotFoundException, UnsupportedModelException {
 		try {
 			return Utils.readModel(modelPath);
 		}
@@ -39,7 +39,7 @@ public class CompareOracleMutantBDD {
 		}
 	}
 
-	public static Conformance getConformance(OracleFIDE oracle, FeatureModel mutant) throws TimeoutException, IOException, FeatureModelException, ConfigurationEngineException {
+	public static Conformance getConformance(OracleFIDE oracle, IFeatureModel mutant) throws TimeoutException, IOException, FeatureModelException, ConfigurationEngineException {
 		if(oracle instanceof OracleFIDEbyFM) {
 			return getConformance(((OracleFIDEbyFM) oracle).getFeatureModel(), mutant);
 		}
@@ -60,7 +60,7 @@ public class CompareOracleMutantBDD {
 		return getConformance(readModel(oracle), readModel(mutant));
 	}
 
-	public static Conformance getConformance(FeatureModel oracle, FeatureModel mutant) throws TimeoutException, IOException, FeatureModelException, ConfigurationEngineException {
+	public static Conformance getConformance(IFeatureModel oracle, IFeatureModel mutant) throws TimeoutException, IOException, FeatureModelException, ConfigurationEngineException {
 		// assumiamo che il mutant non abbia MAI piu' features dell'oracolo???
 		// AG
 		assert oracle.getFeatureNames().containsAll(mutant.getFeatureNames());
@@ -114,25 +114,25 @@ public class CompareOracleMutantBDD {
 		}*/		
 	}
 
-	public static int getGeneralizationDifference(FeatureModel fm1, FeatureModel fm2) throws IOException, FeatureModelException, ConfigurationEngineException {
+	public static int getGeneralizationDifference(IFeatureModel fm1, IFeatureModel fm2) throws IOException, FeatureModelException, ConfigurationEngineException {
 		return getDifference(fm1, fm2);
 	}
 
-	public static int getSpecializationDifference(FeatureModel fm1, FeatureModel fm2) throws IOException, FeatureModelException, ConfigurationEngineException {
+	public static int getSpecializationDifference(IFeatureModel fm1, IFeatureModel fm2) throws IOException, FeatureModelException, ConfigurationEngineException {
 		return getDifference(fm2, fm1);
 	}
 
-	private static int getDifference(FeatureModel fm1, FeatureModel fm2) throws IOException, FeatureModelException, ConfigurationEngineException {
+	private static int getDifference(IFeatureModel fm1, IFeatureModel fm2) throws IOException, FeatureModelException, ConfigurationEngineException {
 		int bdd1 = getBddsCount(fm1);
 		int bdd2 = getBddsCount(fm2);
 		return (bdd2 - bdd1);
 	}
 
-	public static int getArbitraryEditDifference(FeatureModel fm1, FeatureModel fm2) throws IOException, FeatureModelException, ConfigurationEngineException {
+	public static int getArbitraryEditDifference(IFeatureModel fm1, IFeatureModel fm2) throws IOException, FeatureModelException, ConfigurationEngineException {
 		return getBddsCountDiff(fm1, fm2);
 	}
 
-	public static int getBddsCount(FeatureModel fm) throws IOException, FeatureModelException, ConfigurationEngineException {
+	public static int getBddsCount(IFeatureModel fm) throws IOException, FeatureModelException, ConfigurationEngineException {
 		//BDD bdd = CompareOracleMutantBDD.getBDD(fm);
 		FMToBDD f2bdd = new FMToBDD(fm.getFeatureOrderList());
 		BDD bdd = f2bdd.nodeToBDD(NodeCreator.createNodes(fm));
@@ -140,14 +140,14 @@ public class CompareOracleMutantBDD {
 		return num;
 	}
 
-	public static BDD getBDD(FeatureModel fm) throws IOException,
+	public static BDD getBDD(IFeatureModel fm) throws IOException,
 			FeatureModelException, ConfigurationEngineException {
 		/* use splar to count the valid configurations */
 		SXFMWriter sxfmWriter = new SXFMWriter(fm);
 		File temp = File.createTempFile("tempfile", ".temp");
 		sxfmWriter.writeToFile(temp);
-		splar.core.fm.FeatureModel featureModel = new XMLFeatureModel(temp.getAbsolutePath(), XMLFeatureModel.USE_VARIABLE_NAME_AS_ID);
-		featureModel.loadModel();
+		splar.core.fm.IFeatureModel IFeatureModel = new XMLFeatureModel(temp.getAbsolutePath(), XMLFeatureModel.USE_VARIABLE_NAME_AS_ID);
+		IFeatureModel.loadModel();
 		BDDConfigurationEngine confEngine = new BDDConfigurationEngine(temp.getAbsolutePath());
 		confEngine.reset();
 		FMReasoningWithBDD reasoner = confEngine.getReasoner();
@@ -156,7 +156,7 @@ public class CompareOracleMutantBDD {
 		return bdd;
 	}
 
-	public static int getBddsCountDiff(FeatureModel fm, FeatureModel fm2) throws IOException, FeatureModelException, ConfigurationEngineException {
+	public static int getBddsCountDiff(IFeatureModel fm, IFeatureModel fm2) throws IOException, FeatureModelException, ConfigurationEngineException {
 		// nuovo modo (AG)
 		/*FMToBDD f2bdd = new FMToBDD(fm.getFeatureOrderList());
 		BDD bdd = f2bdd.nodeToBDD(NodeCreator.createNodes(fm));

@@ -8,7 +8,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
@@ -19,7 +19,7 @@ public class AutoremoverFIDE2 extends AlgorithmUsingFIDE {
 
 	public static AutoremoverFIDEFactory factory =  new AutoremoverFIDEFactory(){
 		@Override
-		public AutoremoverFIDE2 getAutoremover(FeatureModel fm, OracleFIDE o){
+		public AutoremoverFIDE2 getAutoremover(IFeatureModel fm, OracleFIDE o){
 			return new AutoremoverFIDE2(fm,o);
 		}
 
@@ -29,7 +29,7 @@ public class AutoremoverFIDE2 extends AlgorithmUsingFIDE {
 		}
 	};
 
-	public AutoremoverFIDE2(FeatureModel fm, OracleFIDE o) {
+	public AutoremoverFIDE2(IFeatureModel fm, OracleFIDE o) {
 		super(fm, o);
 	}
 
@@ -56,7 +56,7 @@ public class AutoremoverFIDE2 extends AlgorithmUsingFIDE {
 	 * @throws TimeoutException
 	 */
 
-	private int fitness(FeatureModel fmP, Set<Configuration> dC, OracleFIDE o)
+	private int fitness(IFeatureModel fmP, Set<Configuration> dC, OracleFIDE o)
 			throws UnsupportedModelException, IOException {
 		int fitness = 0;
 		for (Configuration dc : dC) {
@@ -69,7 +69,7 @@ public class AutoremoverFIDE2 extends AlgorithmUsingFIDE {
 	}
 
 	@Override
-	public FeatureModel bestModel() throws UnsupportedModelException, IOException, TimeoutException {
+	public IFeatureModel bestModel() throws UnsupportedModelException, IOException, TimeoutException {
 		// take alla the mutations
 		// FM4Testgeneration fm4tg = new FM4Testgeneration(candidate, false);
 		logger.debug("candidate " + getCandidate());
@@ -80,7 +80,7 @@ public class AutoremoverFIDE2 extends AlgorithmUsingFIDE {
 			FMMutation next = mutants.next();
 			if (next == null)
 				continue; // necessario per errore nel nostro iterator filtered
-			FeatureModel fmP = next.getFirst();
+			IFeatureModel fmP = next.getFirst();
 			logger.debug("dcs: " + DC.size());// +" mutants: " + mutants.size());
 			logger.debug("mutant " + fmP + " mutation " + next.getSecond());
 			// try to kill with existing tests

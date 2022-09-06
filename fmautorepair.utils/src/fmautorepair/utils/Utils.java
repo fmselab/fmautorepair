@@ -11,16 +11,25 @@ import de.ovgu.featureide.fm.core.base.IConstraint;
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.base.impl.DefaultFeatureModelFactory;
+import de.ovgu.featureide.fm.core.base.impl.FMFactoryManager;
+import de.ovgu.featureide.fm.core.base.impl.FMFormatManager;
+import de.ovgu.featureide.fm.core.init.FMCoreLibrary;
+import de.ovgu.featureide.fm.core.init.LibraryManager;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
+import de.ovgu.featureide.fm.core.io.manager.FeatureModelManager;
 import de.ovgu.featureide.fm.core.io.manager.FileHandler;
 import de.ovgu.featureide.fm.core.io.sxfm.SXFMFormat;
 import de.ovgu.featureide.fm.core.io.xml.XmlFeatureModelFormat;
-import splar.core.fm.FeatureModelException;
-import splar.core.fm.FeatureModelStatistics;
-import splar.core.fm.XMLFeatureModel;
 
 /** fmautorepair.utils to read models */
 public class Utils{
+	
+	static {
+		//FMFormatManager.getInstance().addExtension(new XmlFeatureModelFormat());
+		//LibraryManager.registerLibrary(FMCoreLibrary.getInstance());
+		FMFactoryManager.getInstance().addExtension(DefaultFeatureModelFactory.getInstance());
+	}
+
 
 	static public IFeatureModel readSPLOTModel(String path) throws FileNotFoundException, UnsupportedModelException {
 		// see
@@ -34,28 +43,14 @@ public class Utils{
 	}
 
 	static public IFeatureModel readModel(String path) throws FileNotFoundException, UnsupportedModelException {
-		final IFeatureModel fm_original = DefaultFeatureModelFactory.getInstance().create();
-		XmlFeatureModelFormat format = new XmlFeatureModelFormat();
-		FileHandler.load(new File(path).toPath(), fm_original, format);
-		return fm_original;
+		assert FeatureModelManager.isFileSupported(new File(path).toPath());
+		IFeatureModel fh = FeatureModelManager.load(new File(path).toPath());
+		return fh;
+//		final IFeatureModel fm_original = DefaultFeatureModelFactory.getInstance().create();
+//		XmlFeatureModelFormat format = new XmlFeatureModelFormat();
+//		FileHandler.load(new File(path).toPath(), fm_original, format);
+//		return fm_original;
 
-	}
-
-	static public splar.core.fm.FeatureModel getSplotModel(String featureModelPath) throws FeatureModelException {
-		// Create feature model object from an XML file (SXFM format - see
-		// www.splot-research.org for details)
-		// If an identifier is not provided for a feature use the feature name
-		// as id
-		splar.core.fm.FeatureModel IFeatureModel = new XMLFeatureModel(featureModelPath,
-				XMLFeatureModel.USE_VARIABLE_NAME_AS_ID);
-		// load feature model from
-		IFeatureModel.loadModel();
-		// Now, let's print some statistics about the feature model
-		FeatureModelStatistics stats = new FeatureModelStatistics(IFeatureModel);
-		stats.update();
-
-		// stats.dump();
-		return IFeatureModel;
 	}
 
 	public static Set<String> getFeatureNames(IFeatureModel fm) {

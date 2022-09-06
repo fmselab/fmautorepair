@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,9 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sat4j.specs.TimeoutException;
 
-import com.sun.prism.impl.ps.CachingRoundRectRep;
-
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.editing.Comparison;
 import de.ovgu.featureide.fm.core.editing.ModelComparator;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
@@ -87,11 +86,11 @@ public class NaiveTestAutoremover {
 	private void testAgaintsOracle(String cand, String or, AutoremoverFIDEFactory factory)
 			throws FileNotFoundException, UnsupportedModelException, Exception, TimeoutException, IOException,
 			FeatureModelException, ConfigurationEngineException {
-		FeatureModel candidate = Utils.readModel(cand);
-		FeatureModel oracle = Utils.readModel(or);
+		IFeatureModel candidate = Utils.readModel(cand);
+		IFeatureModel oracle = Utils.readModel(or);
 		AlgorithmUsingFIDE auto = null;
 		auto = factory.getAutoremover(candidate, new OracleFIDEbyFM(oracle));
-		FeatureModel bestModel = auto.bestModel();
+		IFeatureModel bestModel = auto.bestModel();
 		System.out.println("starting " + CompareOracleMutantBDD.getConformance(oracle, candidate));
 		System.out.println("best " + CompareOracleMutantBDD.getConformance(oracle, bestModel));
 	}
@@ -99,12 +98,12 @@ public class NaiveTestAutoremover {
 	private void testCoupleC(String cand, String or) throws Exception {
 		cand=CURRENTDIR+"/"+cand;
 		or=CURRENTDIR+"/"+or;
-		FeatureModel candidate = Utils.readModel(cand);
+		IFeatureModel candidate = Utils.readModel(cand);
 		AlgorithmUsingFIDE auto = null;
 		File file = new File(or);
 		auto = AutoremoverFIDE_SOM_InOrder.factory.getAutoremover(candidate, new OracleFidebyCpp(file));
 
-		FeatureModel bestModel = auto.bestModel();
+		IFeatureModel bestModel = auto.bestModel();
 		// System.out.println("starting " +
 		// CompareOracleMutantBDD.getAdequacy(oracle, candidate));
 		// System.out.println("best " +
@@ -340,13 +339,13 @@ public class NaiveTestAutoremover {
 			assert dir.isDirectory();
 
 			String splotmodel = folder + base + ".xml";
-			FeatureModel oracleFM = Utils.readModel(splotmodel);
+			IFeatureModel oracleFM = Utils.readModel(splotmodel);
 			OracleFIDEbyFM oracle = new OracleFIDEbyFM(oracleFM);
-			FeatureModel best = null;
+			IFeatureModel best = null;
 			for (File file2 : dir.listFiles()) {
 				if (file2.isDirectory())
 					break;
-				FeatureModel mutant2 = Utils.readModel(file2.getAbsolutePath());
+				IFeatureModel mutant2 = Utils.readModel(file2.getAbsolutePath());
 				ModelComparator comp = new ModelComparator(100000000);
 				auto1 = factory.getAutoremover(mutant2, oracle);
 				results.print(file2.getName() + "\t");
@@ -354,7 +353,7 @@ public class NaiveTestAutoremover {
 				results.print(CompareOracleMutantBDD.getConformance(oracleFM, mutant2) + "\t");
 				results.print(comp.compare(mutant2, oracleFM) + "\t");
 
-				final Future<FeatureModel> handler = executor.submit(auto1);
+				final Future<IFeatureModel> handler = executor.submit(auto1);
 				executor.schedule(new Runnable() {
 					@Override
 					public void run() {
@@ -475,12 +474,12 @@ public class NaiveTestAutoremover {
 						assert dir.isDirectory();
 						// legge l'oracolo
 						String splotmodel = folder + base + ".xml";
-						FeatureModel oracleFM = Utils.readModel(splotmodel);
+						IFeatureModel oracleFM = Utils.readModel(splotmodel);
 						OracleFIDEbyFM oracle = new OracleFIDEbyFM(oracleFM);
 						for (File file2 : dir.listFiles()) {
 							if (file2.isDirectory() == false) {
 								String absolutePath2 = file2.getAbsolutePath();
-								FeatureModel mutant2 = Utils.readModel(absolutePath2);
+								IFeatureModel mutant2 = Utils.readModel(absolutePath2);
 								t = new GeneratorThread(absolutePath2, alg, results, mutant2, oracle, secondsTIMEOUT,
 										i);
 								while (GeneratorThread.nRunningThreads >= nsThread)
@@ -518,7 +517,7 @@ public class NaiveTestAutoremover {
 		ModelComparator comparator = new ModelComparator(1000000);
 		int counter = 0;
 		int tests = 0;
-		FeatureModel oracle = Utils.readSPLOTModel(oracleS);
+		IFeatureModel oracle = Utils.readSPLOTModel(oracleS);
 
 		fileStdOutput.print("*model*\t");
 		fileStdOutput.print("*result*\t");
@@ -528,10 +527,10 @@ public class NaiveTestAutoremover {
 			tests++;
 			fileStdOutput.print(file2.getName() + "\t");
 			fileStdOutput.flush();
-			FeatureModel mutant2 = Utils.readModel(file2.getAbsolutePath());
+			IFeatureModel mutant2 = Utils.readModel(file2.getAbsolutePath());
 			AutoremoverFIDE auto1 = (AutoremoverFIDE) AutoremoverFIDE_FOM.factory.getAutoremover(mutant2,
 					new OracleFIDEbyFM(oracle));
-			FeatureModel best = auto1.bestModel();
+			IFeatureModel best = auto1.bestModel();
 			Comparison comparison = comparator.compare(best, oracle);
 			fileStdOutput.println(comparison.toString());
 
@@ -576,23 +575,23 @@ public class NaiveTestAutoremover {
 		for (String base : list) {
 
 			String splotmodel = folderMutants + base + ".xml";
-			FeatureModel oracleFM = Utils.readModel(splotmodel);
+			IFeatureModel oracleFM = Utils.readModel(splotmodel);
 
 			fileStdOutput.print(base + "\t");
 			fileStdOutput.print(oracleFM.getFeatures().size() + "\t");
 			fileStdOutput.print(oracleFM.getConstraints().size() + "\t");
 			String featureModelPath = splotmodel.replace("/featureIDE/", "/");
-			splar.core.fm.FeatureModel featureModel;
+			splar.core.fm.IFeatureModel IFeatureModel;
 			try {
-				featureModel = getSplotModel(featureModelPath);
+				IFeatureModel = getSplotModel(featureModelPath);
 
-				new FTPreOrderSortedECTraversalHeuristic("Pre-CL-MinSpan", featureModel,
+				new FTPreOrderSortedECTraversalHeuristic("Pre-CL-MinSpan", IFeatureModel,
 						FTPreOrderSortedECTraversalHeuristic.FORCE_SORT);
 				VariableOrderingHeuristic heuristic = VariableOrderingHeuristicsManager.createHeuristicsManager()
 						.getHeuristic("Pre-CL-MinSpan");
 
 				// Creates the BDD reasoner
-				ReasoningWithBDD reasoner = new FMReasoningWithBDD(featureModel, heuristic, 50000, 50000, 60000,
+				ReasoningWithBDD reasoner = new FMReasoningWithBDD(IFeatureModel, heuristic, 50000, 50000, 60000,
 						"pre-order");
 
 				// Initialize the reasoner (BDD is created at this moment)
@@ -610,17 +609,17 @@ public class NaiveTestAutoremover {
 		fileStdOutput.close();
 	}
 
-	protected splar.core.fm.FeatureModel getSplotModel(String featureModelPath) throws Exception {
+	protected splar.core.fm.IFeatureModel getSplotModel(String featureModelPath) throws Exception {
 		// Create feature model object from an XML file (SXFM format - see
 		// www.splot-research.org for details)
 		// If an identifier is not provided for a feature use the feature name
 		// as id
-		splar.core.fm.FeatureModel featureModel = new XMLFeatureModel(featureModelPath,
+		splar.core.fm.IFeatureModel IFeatureModel = new XMLFeatureModel(featureModelPath,
 				XMLFeatureModel.USE_VARIABLE_NAME_AS_ID);
 		// load feature model from
-		featureModel.loadModel();
+		IFeatureModel.loadModel();
 
-		return featureModel;
+		return IFeatureModel;
 	}
 
 }

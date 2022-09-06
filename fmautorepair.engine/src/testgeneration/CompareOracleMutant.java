@@ -8,8 +8,7 @@ import java.util.Set;
 
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.Feature;
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.editing.Comparison;
 import de.ovgu.featureide.fm.core.editing.ModelComparator;
@@ -18,7 +17,7 @@ import fmautorepair.utils.Utils;
 
 public class CompareOracleMutant {
 	
-	private static FeatureModel readModel(String modelPath) throws FileNotFoundException, UnsupportedModelException {
+	private static IFeatureModel readModel(String modelPath) throws FileNotFoundException, UnsupportedModelException {
 		try {
 			return Utils.readModel(modelPath);
 		}
@@ -35,7 +34,7 @@ public class CompareOracleMutant {
 		return getAdequacy(readModel(oracle), readModel(mutant));
 	}
 
-	public static Conformance getAdequacy(FeatureModel oracle, FeatureModel mutant) throws TimeoutException {
+	public static Conformance getAdequacy(IFeatureModel oracle, IFeatureModel mutant) throws TimeoutException {
 		// assumiamo che il mutant non abbia MAI piu' features dell'oracolo!!!
 		// AG
 		assert oracle.getFeatureNames().containsAll(mutant.getFeatureNames());

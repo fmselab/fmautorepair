@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.configuration.Selection;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
@@ -39,7 +39,7 @@ public class OracleFidebyCMakeTest {
 	o.addString2Feature("WITH_STATIC_LIB");*/
 
 	
-	static FeatureModel libssh;
+	static IFeatureModel libssh;
 	
 	@BeforeClass
 	public static void setup() throws FileNotFoundException, UnsupportedModelException{

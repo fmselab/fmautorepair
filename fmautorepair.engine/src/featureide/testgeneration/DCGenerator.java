@@ -15,7 +15,7 @@ import org.prop4j.Not;
 import org.prop4j.SatSolver;
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.configuration.ConfigurationReader;
 import de.ovgu.featureide.fm.core.editing.Comparison;
@@ -27,12 +27,12 @@ import fmautorepair.utils.Pair;
 // generate a 
 abstract class DCGenerator {
 
-	abstract Configuration generateDC(FeatureModel f, FeatureModel fmP) throws UnsupportedModelException, IOException, TimeoutException;
+	abstract Configuration generateDC(IFeatureModel f, IFeatureModel fmP) throws UnsupportedModelException, IOException, TimeoutException;
 
-	abstract Set<ConfigurationWithHash> generateDCs(FeatureModel f, FeatureModel fmP, int numDCs)  throws TimeoutException;
+	abstract Set<ConfigurationWithHash> generateDCs(IFeatureModel f, IFeatureModel fmP, int numDCs)  throws TimeoutException;
 	
 
-	abstract Pair<Configuration, Boolean> generateDCandValidity(FeatureModel f, FeatureModel fmP) throws TimeoutException;
+	abstract Pair<Configuration, Boolean> generateDCandValidity(IFeatureModel f, IFeatureModel fmP) throws TimeoutException;
 	
 }
 
@@ -42,7 +42,7 @@ class DCGeneratorByComparator extends DCGenerator {
 	//private Configuration conf;
 
 	@Override
-	Configuration generateDC(FeatureModel f, FeatureModel fmP)
+	Configuration generateDC(IFeatureModel f, IFeatureModel fmP)
 			throws UnsupportedModelException, IOException, TimeoutException {
 		ModelComparator comparator = new ModelComparator(1000000);
 		Comparison comparison = comparator.compare(f, fmP);
@@ -63,7 +63,7 @@ class DCGeneratorByComparator extends DCGenerator {
 	}
 
 	@Override
-	Set<ConfigurationWithHash> generateDCs(FeatureModel f, FeatureModel fmP, int numDCs) throws TimeoutException {
+	Set<ConfigurationWithHash> generateDCs(IFeatureModel f, IFeatureModel fmP, int numDCs) throws TimeoutException {
 		ModelComparator comparator = new ModelComparator(1000000);
 		Comparison comparison = comparator.compare(f, fmP);
 		if (comparison.equals(Comparison.REFACTORING)) {
@@ -106,7 +106,7 @@ class DCGeneratorByComparator extends DCGenerator {
 	 * @return the configuration and a boolean saying whether the configuration is valid over the mutant
 	 */
 	@Override
-	Pair<Configuration, Boolean> generateDCandValidity(FeatureModel f, FeatureModel fmP) throws TimeoutException {
+	Pair<Configuration, Boolean> generateDCandValidity(IFeatureModel f, IFeatureModel fmP) throws TimeoutException {
 		ModelComparator comparator = new ModelComparator(1000000);
 		Comparison comparison = comparator.compare(f, fmP);
 		if (comparison.equals(Comparison.REFACTORING)) {
@@ -137,7 +137,7 @@ class DCGeneratorBySAT extends DCGenerator {
 
 	
 	@Override
-	Configuration generateDC(FeatureModel fm, FeatureModel fmP)
+	Configuration generateDC(IFeatureModel fm, IFeatureModel fmP)
 			throws UnsupportedModelException, IOException, TimeoutException {
 		HashMap<Object, Node> oldMap = NodeCreator.calculateReplacingMap(fm);
 		HashMap<Object, Node> newMap = NodeCreator.calculateReplacingMap(fmP);
@@ -177,13 +177,13 @@ class DCGeneratorBySAT extends DCGenerator {
 	}
 
 	@Override
-	Pair<Configuration, Boolean> generateDCandValidity(FeatureModel f, FeatureModel fmP) throws TimeoutException {
+	Pair<Configuration, Boolean> generateDCandValidity(IFeatureModel f, IFeatureModel fmP) throws TimeoutException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	Set<ConfigurationWithHash> generateDCs(FeatureModel f, FeatureModel fmP, int numDCs) {
+	Set<ConfigurationWithHash> generateDCs(IFeatureModel f, IFeatureModel fmP, int numDCs) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -197,7 +197,7 @@ class DCGeneratorByComparatorIncremental {
 	private ModelComparator comparator;
 	private Comparison comparison;
 
-	DCGeneratorByComparatorIncremental(FeatureModel f, FeatureModel fmP) {
+	DCGeneratorByComparatorIncremental(IFeatureModel f, IFeatureModel fmP) {
 		comparator = new ModelComparator(1000000);
 		comparison = comparator.compare(f, fmP);
 	}

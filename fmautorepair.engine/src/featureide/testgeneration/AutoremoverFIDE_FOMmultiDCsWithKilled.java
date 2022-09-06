@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import fmautorepair.mutationoperators.FMMutation;
 import fmautorepair.mutationprocess.FMMutationProcess;
 import testgeneration.OracleFIDE;
@@ -14,7 +14,7 @@ public class AutoremoverFIDE_FOMmultiDCsWithKilled extends AutoremoverFIDEmultiD
 	public static AutoremoverFIDEFactory factory(final int n) {
 		return new AutoremoverFIDEFactory() {
 			@Override
-			public AlgorithmUsingFIDE getAutoremover(FeatureModel fm, OracleFIDE o) {
+			public AlgorithmUsingFIDE getAutoremover(IFeatureModel fm, OracleFIDE o) {
 				return new AutoremoverFIDE_FOMmultiDCsWithKilled(fm, o, n);
 			}
 
@@ -25,14 +25,14 @@ public class AutoremoverFIDE_FOMmultiDCsWithKilled extends AutoremoverFIDEmultiD
 		};
 	}
 
-	public AutoremoverFIDE_FOMmultiDCsWithKilled(FeatureModel fm, OracleFIDE o, int n) {
+	public AutoremoverFIDE_FOMmultiDCsWithKilled(IFeatureModel fm, OracleFIDE o, int n) {
 		super(fm, o, n);
 	}
 
 	static private Logger logger = Logger.getLogger(AutoremoverFIDE_FOMmultiDCsWithKilled.class);
 
 	@Override
-	protected Iterator<FMMutation> getMutants(FeatureModel candidate) {
+	protected Iterator<FMMutation> getMutants(IFeatureModel candidate) {
 		return FMMutationProcess.getAllMutantsRndOrderFOM(candidate);
 	}
 }

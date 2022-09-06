@@ -3,10 +3,13 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="experiments"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/fmautorepair.mutation"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/fmautorepair.utils"/>
-	<classpathentry kind="lib" path="/fmautorepair.libs/featureide_fm_core.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="/fmautorepair.libs/org.sat4j.core.jar"/>
 	<classpathentry kind="lib" path="/fmautorepair.libs/splar.jar"/>
 	<classpathentry kind="lib" path="/fmautorepair.libs/org.eclipse.core.resources-3.9.0.v20140514-1307.jar"/>
@@ -15,5 +18,6 @@
 	<classpathentry kind="lib" path="/fmautorepair.libs/javabdd.jar"/>
 	<classpathentry kind="lib" path="/fmautorepair.libs/log4j.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="/fmautorepair.libs/de.ovgu.featureide.lib.fm-v3.8.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
