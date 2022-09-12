@@ -27,43 +27,43 @@ public class MandatoryToOptionalTest {
 		IFeatureModel fmodel = Utils.readModel("models/modelfman.xml");
 		// a1 is mandatory ma non reale (non mutare)
 		IFeature a1 = fmodel.getFeature("a1");
-		assertTrue(a1.isMandatory());
+		assertTrue(a1.getStructure().isMandatory());
 		assertFalse(MandatoryToOptional.isTrueMandatory(a1));
 		// B is mandatory reale (da mutare)
 		IFeature B = fmodel.getFeature("B");
-		assertTrue(B.isMandatory());
+		assertTrue(B.getStructure().isMandatory());
 		assertTrue(MandatoryToOptional.isTrueMandatory(B));
 		// f is optional
 		IFeature f = fmodel.getFeature("f");
-		assertFalse(f.isMandatory());
+		assertFalse(f.getStructure().isMandatory());
 		// d is mandatory reale (da mutare)
 		IFeature d = fmodel.getFeature("d");
-		assertTrue(d.isMandatory());
+		assertTrue(d.getStructure().isMandatory());
 		assertTrue(MandatoryToOptional.isTrueMandatory(d));
 		//
 		IFeature c1 = fmodel.getFeature("c1");
-		assertTrue(c1.isMandatory());
+		assertTrue(c1.getStructure().isMandatory());
 		assertFalse(MandatoryToOptional.isTrueMandatory(c1));
 		IFeature c2 = fmodel.getFeature("c2");
-		assertTrue(c2.isMandatory());
+		assertTrue(c2.getStructure().isMandatory());
 		assertFalse(MandatoryToOptional.isTrueMandatory(c2));
 		IFeature g = fmodel.getFeature("g");
-		assertTrue(g.isMandatory());
+		assertTrue(g.getStructure().isMandatory());
 		assertFalse(MandatoryToOptional.isTrueMandatory(g));
 		// i is mandatoria reale
 		IFeature i = fmodel.getFeature("i");
-		assertTrue(i.isMandatory());
+		assertTrue(i.getStructure().isMandatory());
 		assertTrue(MandatoryToOptional.isTrueMandatory(i));
 		// w is not mandatory
 		IFeature w = fmodel.getFeature("w");
-		assertTrue(w.isMandatory());
+		assertTrue(w.getStructure().isMandatory());
 		assertFalse(MandatoryToOptional.isTrueMandatory(w));
 	}
 
 	@Test
 	public void testMutation() throws FileNotFoundException,
 			UnsupportedModelException {
-		FeatureModel fmodel = Utils.readModel("models/modelfman.xml");
+		IFeatureModel fmodel = Utils.readModel("models/modelfman.xml");
 		List<FMMutation> res = CollectionsUtil.listFromIterator(MandatoryToOptional.instance.mutate(fmodel));	
 		assertEquals(4,res.size());		
 	}
@@ -71,7 +71,7 @@ public class MandatoryToOptionalTest {
 	@Test
 	public void testMutation4() throws FileNotFoundException,
 			UnsupportedModelException {
-		FeatureModel fmodel = Utils.readModel("models/model4.xml");
+		IFeatureModel fmodel = Utils.readModel("models/model4.xml");
 		List<FMMutation> res = CollectionsUtil.listFromIterator(MandatoryToOptional.instance.mutate(fmodel));	
 		assertEquals(2,res.size());		
 	}
@@ -79,7 +79,7 @@ public class MandatoryToOptionalTest {
 	@Test
 	public void testMutation1Mandatory() throws FileNotFoundException,
 			UnsupportedModelException {
-		FeatureModel fmodel = Utils.readModel("models/model_one_mandatory.xml");
+		IFeatureModel fmodel = Utils.readModel("models/model_one_mandatory.xml");
 		List<FMMutation> res = CollectionsUtil.listFromIterator(MandatoryToOptional.instance.mutate(fmodel));	
 		assertEquals(1,res.size());
 		// converto

@@ -29,7 +29,7 @@ public class MoveFeatureTest {
 	public void testMutate() throws FileNotFoundException, UnsupportedModelException {		
 		IFeatureModel fm = Utils.readModel("examples_fmsfrompreprocessor/nadi_icse14/Example1_pa.xml");
 		List<FMMutation> res = CollectionsUtil.listFromIterator(MoveFeature.instance.mutate(fm));
-		Pair<FeatureModel, String> fmm = res.get(0);
+		Pair<IFeatureModel, String> fmm = res.get(0);
 		assertNotSame(fmm, fm);
 		
 	}
@@ -70,7 +70,7 @@ public class MoveFeatureTest {
 	public void testMove() throws FileNotFoundException, UnsupportedModelException{
 		IFeatureModel a = Utils.readModel("examples_fmsfrompreprocessor/nadi_icse14/listing2_ash_busybox_ag2.xml");
 		FMMutation res = MoveFeature.moveFeatureTo(a, a.getFeature("ASH"), a.getFeature("EDITING_VI"));
-		System.out.println(res.getFirst() + "\n " +res.getFirst().getFeatureNames());
+		System.out.println(res.getFirst() + "\n " + Utils.getFeatureNames(res.getFirst()));
 	}
 	
 }

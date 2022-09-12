@@ -22,22 +22,22 @@ public class AlternativeToAndTest {
 	@Test
 	public void test() throws FileNotFoundException, UnsupportedModelException {
 		IFeatureModel fm = Utils.readModel("models/model1fi.xml");
-		assertTrue(fm.getRoot().isAlternative());
+		assertTrue(fm.getStructure().getRoot().isAlternative());
 		List<FMMutation> res = CollectionsUtil.listFromIterator(AlternativeToAnd.instance.mutate(fm));
 		// only one mutation
 		assertEquals(1, res.size());
 		// the original is not mutated
-		assertTrue(fm.getRoot().toString() + " " + fm.getRoot().isAnd() + " " + fm.getRoot().isOr(), fm.getRoot().isAlternative());
+		assertTrue(fm.getStructure().getRoot().toString() + " " + fm.getStructure().getRoot().isAnd() + " " + fm.getStructure().getRoot().isOr(), fm.getStructure().getRoot().isAlternative());
 		// the mutated is 
 		Pair<IFeatureModel, String> fmm = res.get(0);
 		assertNotSame(fmm, fm);
 		// 
 		IFeatureModel fmmm = fmm.getFirst();
-		assertTrue(fmmm.getRoot().isAnd());
-		assertTrue(fmmm.getRoot().getChildren().size() == 3);
-		assertTrue(fmmm.getRoot().getChildren().get(0).isMandatory());
-		assertTrue(fmmm.getRoot().getChildren().get(1).isMandatory());
-		assertTrue(fmmm.getRoot().getChildren().get(2).isMandatory());
+		assertTrue(fmmm.getStructure().getRoot().isAnd());
+		assertTrue(fmmm.getStructure().getRoot().getChildren().size() == 3);
+		assertTrue(fmmm.getStructure().getRoot().getChildren().get(0).isMandatory());
+		assertTrue(fmmm.getStructure().getRoot().getChildren().get(1).isMandatory());
+		assertTrue(fmmm.getStructure().getRoot().getChildren().get(2).isMandatory());
 		
 		
 	}

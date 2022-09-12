@@ -22,17 +22,17 @@ public class AlternativeToOrTest {
 	@Test
 	public void test() throws FileNotFoundException, UnsupportedModelException {
 		IFeatureModel fm = Utils.readModel("models/model1fi.xml");
-		assertTrue(fm.getRoot().isAlternative());
+		assertTrue(fm.getStructure().getRoot().isAlternative());
 		List<FMMutation> res = CollectionsUtil.listFromIterator(AlternativeToOr.instance.mutate(fm));
 		// only one mutation
 		assertEquals(1, res.size());
 		// the original is not mutated
-		assertTrue(fm.getRoot().toString() + " " + fm.getRoot().isAnd() + " " + fm.getRoot().isOr(), fm.getRoot().isAlternative());
+		assertTrue(fm.getStructure().getRoot().toString() + " " + fm.getStructure().getRoot().isAnd() + " " + fm.getStructure().getRoot().isOr(), fm.getStructure().getRoot().isAlternative());
 		// the mutated is 
 		Pair<IFeatureModel, String> fmm = res.get(0);
 		assertNotSame(fmm, fm);
-		assertEquals(fmm.toString(), "model",fmm.getFirst().getRoot().getName());
-		assertTrue(fmm.toString(), fmm.getFirst().getRoot().isOr());
+		assertEquals(fmm.toString(), "model",fmm.getFirst().getStructure().getRoot().getFeature().getName());
+		assertTrue(fmm.toString(), fmm.getFirst().getStructure().getRoot().isOr());
 		
 	}
 
