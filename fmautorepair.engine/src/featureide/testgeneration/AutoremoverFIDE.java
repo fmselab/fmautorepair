@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
@@ -16,7 +16,7 @@ import testgeneration.OracleFIDE;
 
 public abstract class AutoremoverFIDE extends AlgorithmUsingFIDE {
 
-	protected AutoremoverFIDE(FeatureModel fm, OracleFIDE o) {
+	protected AutoremoverFIDE(IFeatureModel fm, OracleFIDE o) {
 		super(fm, o);
 	}	
 
@@ -42,7 +42,7 @@ public abstract class AutoremoverFIDE extends AlgorithmUsingFIDE {
 	 * @throws TimeoutException
 	 */
 	@Override
-	public FeatureModel bestModel() throws UnsupportedModelException, IOException, TimeoutException {
+	public IFeatureModel bestModel() throws UnsupportedModelException, IOException, TimeoutException {
 		// take alla the mutations
 		// FM4Testgeneration fm4tg = new FM4Testgeneration(candidate, false);
 		logger.debug("candidate " + candidate);
@@ -54,7 +54,7 @@ public abstract class AutoremoverFIDE extends AlgorithmUsingFIDE {
 			FMMutation next = mutants.next();
 			if (next == null)
 				continue; // necessario per errore nel nostro iterator filtered
-			FeatureModel fmP = next.getFirst();
+			IFeatureModel fmP = next.getFirst();
 			logger.debug("dcs: " + DCs.size() + DCs.toString());// +" mutants: " +
 																// mutants.size());
 			logger.debug("mutant " + fmP + " mutation " + next.getSecond());
@@ -124,5 +124,5 @@ public abstract class AutoremoverFIDE extends AlgorithmUsingFIDE {
 		return getCandidate();
 	}
 
-	protected abstract Iterator<FMMutation> getMutants(FeatureModel candidate);
+	protected abstract Iterator<FMMutation> getMutants(IFeatureModel candidate);
 }

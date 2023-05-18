@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import org.prop4j.ConfEvaluator;
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
@@ -27,7 +27,7 @@ public class AutoremoverFIDECollect extends AlgorithmUsingFIDE {
 
 	public static AutoremoverFIDEFactory factory =  new AutoremoverFIDEFactory(){
 		@Override
-		public AutoremoverFIDECollect getAutoremover(FeatureModel fm, OracleFIDE o){
+		public AutoremoverFIDECollect getAutoremover(IFeatureModel fm, OracleFIDE o){
 			return new AutoremoverFIDECollect(fm,o);
 		}
 
@@ -43,7 +43,7 @@ public class AutoremoverFIDECollect extends AlgorithmUsingFIDE {
 	 * @param fm the feature model to start with
 	 * @param o the oracle
 	 */
-	protected AutoremoverFIDECollect(FeatureModel fm, OracleFIDE o) {
+	protected AutoremoverFIDECollect(IFeatureModel fm, OracleFIDE o) {
 		super(fm, o);
 	}
 
@@ -53,7 +53,7 @@ public class AutoremoverFIDECollect extends AlgorithmUsingFIDE {
 	List<ConfigurationWValidity> dcs = new ArrayList<>();
 	// insieme delle validitï¿½ del candidato per evitare di controllare due volte
 	List<Boolean> dcValwrtCandidate = new ArrayList<>();
-	// numero di Dc per il candidato è conforme con l'oracolo
+	// numero di Dc per il candidato ï¿½ conforme con l'oracolo
 	int scoreCandidate = 0; 
 
 	@Override
@@ -73,7 +73,7 @@ public class AutoremoverFIDECollect extends AlgorithmUsingFIDE {
 	 * @throws TimeoutException
 	 */
 	@Override
-	public FeatureModel bestModel() throws UnsupportedModelException, IOException, TimeoutException {
+	public IFeatureModel bestModel() throws UnsupportedModelException, IOException, TimeoutException {
 		for(;;){
 			logger.debug("candidate " + candidate);
 			//
@@ -88,7 +88,7 @@ public class AutoremoverFIDECollect extends AlgorithmUsingFIDE {
 				if (next == null)
 					continue; // necessario per errore nel nostro iterator
 								// filtered
-				FeatureModel fmP = next.getFirst();
+				IFeatureModel fmP = next.getFirst();
 				//logger.debug("dcs: " + dcs.size()+ dcs.toString());// +" mutants:
 																	// " +
 																	// mutants.size());
@@ -141,7 +141,7 @@ public class AutoremoverFIDECollect extends AlgorithmUsingFIDE {
 			mutants = getMutants(candidate);
 			boolean betterFound = false;
 			while (mutants.hasNext()) {
-				FeatureModel fm = mutants.next().getFirst();
+				IFeatureModel fm = mutants.next().getFirst();
 				int score = 0;
 				for (ConfigurationWValidity d : dcs) {
 					ConfEvaluator ce = new ConfEvaluator(d.getFirst());
@@ -167,7 +167,7 @@ public class AutoremoverFIDECollect extends AlgorithmUsingFIDE {
 		return getCandidate();
 	}
 
-	protected Iterator<FMMutation> getMutants(FeatureModel candidate){
+	protected Iterator<FMMutation> getMutants(IFeatureModel candidate){
 		return FMMutationProcess.getAllMutantsRndOrderFOM(candidate);
 	}
 }

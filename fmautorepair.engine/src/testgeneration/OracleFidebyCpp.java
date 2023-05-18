@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.utils.Utils;
@@ -35,11 +35,11 @@ public class OracleFidebyCpp extends OracleFIDE {
 	}
 
 	@Override
-	public FeatureModel getFeatureModel() throws FileNotFoundException,
+	public IFeatureModel getFeatureModel() throws FileNotFoundException,
 			UnsupportedModelException {
 		String splotmodel = file.getParent() + File.separator
 				+ name+"_oracle.xml";
-		FeatureModel oracleFM = Utils.readModel(splotmodel);
+		IFeatureModel oracleFM = Utils.readModel(splotmodel);
 		if (oracleFM.getRoot().isAbstract())
 			oracleFM.getRoot().setAbstract(false);
 

@@ -1,45 +1,63 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-	<featureModel chosenLayoutAlgorithm="1">
-		<struct>
-			<and mandatory="true" name="Marketplace">
-				<and mandatory="true" name="Cliente">
-					<alt mandatory="true" name="GestionUsuario">
-						<feature mandatory="true" name="AutenticarUsuario"/>
-						<feature mandatory="true" name="RecuperarContrasena"/>
-						<feature mandatory="true" name="CRUD_Usuario"/>
-					</alt>
-				</and>
-				<and mandatory="true" name="Proveedor">
-					<and mandatory="true" name="AdministracionDeProductos">
-						<feature name="RegistrarProducto"/>
-						<feature name="ActualizarProducto"/>
-						<feature name="CrearCategoria"/>
-						<feature name="CrearPaquete"/>
-						<feature name="AlarmaInventarioBajo"/>
-						<feature name="Feature_16"/>
-					</and>
-					<and mandatory="true" name="BuscarProducto">
-						<feature mandatory="true" name="ConsultarHistoricoVentas"/>
-						<feature mandatory="true" name="ConsultarHistoricoComprasCliente"/>
-						<feature name="ConsultarEstadoPagoCompra"/>
-						<and name="CrearPromocion">
-							<feature mandatory="true" name="ConsultarOrdenesEnvio"/>
-							<feature mandatory="true" name="ConsultarEnviosPorEstado"/>
-						</and>
-						<feature name="ConsultarHistoricoDevoluciones"/>
-					</and>
-					<or mandatory="true" name="AdministracionDeEnvios">
-						<feature mandatory="true" name="ActualizarEstadoEnvio"/>
-						<feature mandatory="true" name="ConsultarEstadoDevoluciones"/>
-						<feature mandatory="true" name="SeleccionarProveedoresEnvio"/>
-					</or>
-				</and>
+<featureModel>
+	<properties>
+		<calculations key="tautology" value="true"/>
+		<calculations key="auto" value="true"/>
+		<graphics key="autolayoutconstraints" value="false"/>
+		<graphics key="legendautolayout" value="true"/>
+		<calculations key="redundant" value="true"/>
+		<graphics key="showshortnames" value="false"/>
+		<graphics key="layout" value="horizontal"/>
+		<graphics key="showcollapsedconstraints" value="true"/>
+		<graphics key="legendhidden" value="false"/>
+		<calculations key="constraints" value="true"/>
+		<graphics key="layoutalgorithm" value="1"/>
+		<calculations key="features" value="true"/>
+	</properties>
+	<struct>
+		<and mandatory="true" name="Marketplace">
+			<and mandatory="true" name="Cliente">
+				<graphics key="collapsed" value="false"/>
+				<alt mandatory="true" name="GestionUsuario">
+					<graphics key="collapsed" value="false"/>
+					<feature name="AutenticarUsuario"/>
+					<feature name="RecuperarContrasena"/>
+					<feature name="CRUD_Usuario"/>
+				</alt>
 			</and>
-		</struct>
-		<constraints/>
-		<calculations Auto="true" Constraints="true" Features="true" Redundant="true" Tautology="true"/>
-		<comments>
-			<c>MarketPlace1</c>
-		</comments>
-		<featureOrder userDefined="false"/>
-	</featureModel>
+			<and mandatory="true" name="Proveedor">
+				<graphics key="collapsed" value="false"/>
+				<and mandatory="true" name="AdministracionDeProductos">
+					<graphics key="collapsed" value="false"/>
+					<feature name="RegistrarProducto"/>
+					<feature name="ActualizarProducto"/>
+					<feature name="CrearCategoria"/>
+					<feature name="CrearPaquete"/>
+					<feature name="AlarmaInventarioBajo"/>
+					<feature name="Feature_16"/>
+				</and>
+				<and mandatory="true" name="BuscarProducto">
+					<graphics key="collapsed" value="true"/>
+					<feature mandatory="true" name="ConsultarHistoricoVentas"/>
+					<feature mandatory="true" name="ConsultarHistoricoComprasCliente"/>
+					<feature name="ConsultarEstadoPagoCompra"/>
+					<and name="CrearPromocion">
+						<graphics key="collapsed" value="true"/>
+						<feature mandatory="true" name="ConsultarOrdenesEnvio"/>
+						<feature mandatory="true" name="ConsultarEnviosPorEstado"/>
+					</and>
+					<feature name="ConsultarHistoricoDevoluciones"/>
+				</and>
+				<or mandatory="true" name="AdministracionDeEnvios">
+					<graphics key="collapsed" value="true"/>
+					<feature name="ActualizarEstadoEnvio"/>
+					<feature name="ConsultarEstadoDevoluciones"/>
+					<feature name="SeleccionarProveedoresEnvio"/>
+				</or>
+			</and>
+		</and>
+	</struct>
+	<comments>
+		<c>MarketPlace1</c>
+	</comments>
+</featureModel>

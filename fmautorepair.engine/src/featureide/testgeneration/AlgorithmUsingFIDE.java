@@ -14,10 +14,9 @@ import java.util.concurrent.TimeUnit;
 import org.prop4j.ConfEvaluator;
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.Feature;
-import de.ovgu.featureide.fm.core.FeatureModel;
 import de.ovgu.featureide.fm.core.FeatureModelAnalyzer;
-import de.ovgu.featureide.fm.core.FeatureStatus;
+import de.ovgu.featureide.fm.core.analysis.FeatureProperties.FeatureStatus;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.editing.Comparison;
 import de.ovgu.featureide.fm.core.editing.ModelComparator;
@@ -32,24 +31,24 @@ import testgeneration.OracleFIDE;
  * 
  *
  */
-public abstract class AlgorithmUsingFIDE implements Callable<FeatureModel> {
+public abstract class AlgorithmUsingFIDE implements Callable<IFeatureModel> {
 	
 	// the factory for this class
 	public static abstract class AutoremoverFIDEFactory{
 		// return the algorithm
-		abstract public AlgorithmUsingFIDE getAutoremover(FeatureModel fm, OracleFIDE o);
+		abstract public AlgorithmUsingFIDE getAutoremover(IFeatureModel fm, OracleFIDE o);
 		// return the name of the algorithm
 		abstract public String getAlgorithmName();
 	};
 
 	// the candidate
-	protected FeatureModel candidate;
+	protected IFeatureModel candidate;
 	// the oracle
 	private OracleFIDE oracle;
 	private Conformance originalConformance;
 	private Conformance newConformance;
 	private ExecutorService es = Executors.newSingleThreadScheduledExecutor();
-	private Future<FeatureModel> futureBest;
+	private Future<IFeatureModel> futureBest;
 	
 	private float execTime;
 	public Comparison comparison;
@@ -59,7 +58,7 @@ public abstract class AlgorithmUsingFIDE implements Callable<FeatureModel> {
 	 * @param candidate initial candidate
 	 * @param o oracle
 	 */
-	public AlgorithmUsingFIDE(FeatureModel candidate, OracleFIDE o) {
+	public AlgorithmUsingFIDE(IFeatureModel candidate, OracleFIDE o) {
 		// do some prechecks
 		//assert precheck(candidate,o);
 		this.setCandidate(candidate);
@@ -71,7 +70,7 @@ public abstract class AlgorithmUsingFIDE implements Callable<FeatureModel> {
 	}	
 
 
-	private boolean precheck(FeatureModel candidate, OracleFIDE o) {
+	private boolean precheck(IFeatureModel candidate, OracleFIDE o) {
 		// all the features must be present in the candidate
 		try {
 			o.getFeatureModel().getFeatureNames().containsAll(candidate.getFeatureNames());
@@ -112,7 +111,7 @@ public abstract class AlgorithmUsingFIDE implements Callable<FeatureModel> {
 	 * 
 	 * @throws Exception
 	 */
-	abstract public FeatureModel bestModel() throws Exception;
+	abstract public IFeatureModel bestModel() throws Exception;
 
 	/**
 	 * 
@@ -127,16 +126,16 @@ public abstract class AlgorithmUsingFIDE implements Callable<FeatureModel> {
 	abstract public int numberOfGeneratedDCs();
 
 	@Override
-	public final FeatureModel call() throws Exception {
+	public final IFeatureModel call() throws Exception {
 		return bestModel();
 	}
 
-	final public FeatureModel generateBestAndInfo(int timeOutInSeconds)
+	final public IFeatureModel generateBestAndInfo(int timeOutInSeconds)
 			throws  IOException, FeatureModelException,
 			ConfigurationEngineException, TimeoutException {
 		long time = System.currentTimeMillis();
 		futureBest = es.submit(this);
-		FeatureModel best = null;
+		IFeatureModel best = null;
 		originalConformance = CompareOracleMutantBDD.getConformance(oracle, candidate);
 		// take the test suite generate by the generator
 		try {
@@ -173,7 +172,7 @@ public abstract class AlgorithmUsingFIDE implements Callable<FeatureModel> {
 		return best;
 	}
 
-	public FeatureModel getCandidate() {
+	public IFeatureModel getCandidate() {
 		return candidate;
 	}
 
@@ -205,7 +204,7 @@ public abstract class AlgorithmUsingFIDE implements Callable<FeatureModel> {
 	 * @throws UnsupportedModelException
 	 * @throws IOException
 	 */
-	boolean killed(FeatureModel fmP, Configuration dc, OracleFIDE ora) throws UnsupportedModelException, IOException {
+	boolean killed(IFeatureModel fmP, Configuration dc, OracleFIDE ora) throws UnsupportedModelException, IOException {
 		//Configuration fmPconf = new Configuration(dc, fmP);
 		ConfEvaluator ev = new ConfEvaluator(dc);
 		// if fmPconf is valid, it cannot contain extra features
@@ -218,13 +217,13 @@ public abstract class AlgorithmUsingFIDE implements Callable<FeatureModel> {
 		return ora.validity(dc) != fmPconfIsValid;
 	}
 	
-	protected boolean killed(FeatureModel fmP, ConfigurationWValidity d) {
+	protected boolean killed(IFeatureModel fmP, ConfigurationWValidity d) {
 		ConfEvaluator ev = new ConfEvaluator(d.getFirst());
 		boolean fmPconfIsValid = ev.isValidForModel(fmP);
 		return d.getSecond() != fmPconfIsValid;
 	}
 
-	protected void setCandidate(FeatureModel candidate) {
+	protected void setCandidate(IFeatureModel candidate) {
 		this.candidate = candidate;
 	}
 
@@ -246,7 +245,7 @@ public abstract class AlgorithmUsingFIDE implements Callable<FeatureModel> {
 		}
 	}
 
-	protected Configuration generateDc(FeatureModel candidate, FeatureModel fmP) throws UnsupportedModelException, IOException, TimeoutException {
+	protected Configuration generateDc(IFeatureModel candidate, IFeatureModel fmP) throws UnsupportedModelException, IOException, TimeoutException {
 		return new DCGeneratorByComparator().generateDC(candidate,fmP);
 		//return new DCGeneratorBySAT().generateDC(candidate,fmP);
 	}

@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-	<featureModel chosenLayoutAlgorithm="1">
-		<struct>
-			<and mandatory="true" name="Aircraft">
-				<or mandatory="true" name="Wing">
-					<feature mandatory="true" name="High"/>
-					<feature mandatory="true" name="Shoulder"/>
-					<feature mandatory="true" name="Low"/>
-				</or>
-				<alt name="Engine">
-					<feature mandatory="true" name="Jet"/>
-					<feature mandatory="true" name="Piston"/>
-				</alt>
-				<or mandatory="true" name="Materials">
-					<feature mandatory="true" name="Metal"/>
-					<feature mandatory="true" name="Wood"/>
-					<feature mandatory="true" name="Cloth"/>
-					<feature mandatory="true" name="Plastic"/>
-				</or>
-			</and>
-		</struct>
-		<constraints/>
-		<calculations Auto="true" Constraints="true" Features="true" Redundant="true"/>
-		<comments/>
-		<featureOrder userDefined="false"/>
-	</featureModel>
+<featureModel>
+	<properties>
+		<calculations key="auto" value="true"/>
+		<graphics key="autolayoutconstraints" value="false"/>
+		<graphics key="legendautolayout" value="true"/>
+		<calculations key="redundant" value="true"/>
+		<graphics key="showshortnames" value="false"/>
+		<graphics key="layout" value="horizontal"/>
+		<graphics key="showcollapsedconstraints" value="true"/>
+		<graphics key="legendhidden" value="false"/>
+		<calculations key="constraints" value="true"/>
+		<graphics key="layoutalgorithm" value="1"/>
+		<calculations key="features" value="true"/>
+	</properties>
+	<struct>
+		<and mandatory="true" name="Aircraft">
+			<or mandatory="true" name="Wing">
+				<graphics key="collapsed" value="false"/>
+				<feature name="High"/>
+				<feature name="Shoulder"/>
+				<feature name="Low"/>
+			</or>
+			<alt name="Engine">
+				<graphics key="collapsed" value="false"/>
+				<feature name="Jet"/>
+				<feature name="Piston"/>
+			</alt>
+			<or mandatory="true" name="Materials">
+				<graphics key="collapsed" value="false"/>
+				<feature name="Metal"/>
+				<feature name="Wood"/>
+				<feature name="Cloth"/>
+				<feature name="Plastic"/>
+			</or>
+		</and>
+	</struct>
+</featureModel>

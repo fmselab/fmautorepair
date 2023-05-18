@@ -3,7 +3,7 @@ package featureide.testgeneration;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.editing.Comparison;
 import de.ovgu.featureide.fm.core.editing.ModelComparator;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
@@ -24,7 +24,7 @@ public class GeneratorThread extends Thread {
 	static Integer nRunningThreads = 0;
 	private AlgorithmUsingFIDE generator;
 	private PrintStream output;
-	private FeatureModel model;
+	private IFeatureModel model;
 	private int timeOutInSeconds;
 	private int run;
 
@@ -37,7 +37,7 @@ public class GeneratorThread extends Thread {
 	 * @param i
 	 * @param runNumber
 	 */
-	public GeneratorThread(String str, AutoremoverFIDEFactory auto1, PrintStream output, FeatureModel model,
+	public GeneratorThread(String str, AutoremoverFIDEFactory auto1, PrintStream output, IFeatureModel model,
 			OracleFIDE oracle, int timeoutSeconds, int run) {
 		super(str);
 		this.generator = auto1.getAutoremover(model, oracle);
@@ -77,7 +77,7 @@ public class GeneratorThread extends Thread {
 		}
 		try {
 			assert (generator != null);
-			FeatureModel best = generator.generateBestAndInfo(timeOutInSeconds);
+			IFeatureModel best = generator.generateBestAndInfo(timeOutInSeconds);
 			// synchronize when writing the results
 			synchronized (output) {
 				output.flush();

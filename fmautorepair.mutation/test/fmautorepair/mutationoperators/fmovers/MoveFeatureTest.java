@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
+import de.ovgu.featureide.fm.core.base.impl.FeatureModel;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
 import fmautorepair.utils.CollectionsUtil;
@@ -29,9 +30,8 @@ public class MoveFeatureTest {
 	public void testMutate() throws FileNotFoundException, UnsupportedModelException {		
 		IFeatureModel fm = Utils.readModel("examples_fmsfrompreprocessor/nadi_icse14/Example1_pa.xml");
 		List<FMMutation> res = CollectionsUtil.listFromIterator(MoveFeature.instance.mutate(fm));
-		Pair<IFeatureModel, String> fmm = res.get(0);
+		IFeatureModel fmm = res.get(0).getFirst();
 		assertNotSame(fmm, fm);
-		
 	}
 
 	

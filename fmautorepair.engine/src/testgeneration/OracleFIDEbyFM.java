@@ -2,7 +2,7 @@ package testgeneration;
 
 import org.prop4j.ConfEvaluator;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 
 /** oracle when the oracle is another feature model
@@ -11,9 +11,9 @@ import de.ovgu.featureide.fm.core.configuration.Configuration;
  *
  */
 public class OracleFIDEbyFM extends OracleFIDE {
-	private FeatureModel oracle;
+	private IFeatureModel oracle;
 
-	public OracleFIDEbyFM(FeatureModel oracle) {
+	public OracleFIDEbyFM(IFeatureModel oracle) {
 		this.oracle = oracle;
 	}
 
@@ -26,7 +26,7 @@ public class OracleFIDEbyFM extends OracleFIDE {
 	}
 
 	@Override
-	public FeatureModel getFeatureModel() {
+	public IFeatureModel getFeatureModel() {
 		return oracle;
 	}
 }

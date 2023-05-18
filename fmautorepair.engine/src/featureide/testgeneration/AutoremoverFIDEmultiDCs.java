@@ -9,7 +9,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.sat4j.specs.TimeoutException;
 
-import de.ovgu.featureide.fm.core.FeatureModel;
+import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
 import fmautorepair.mutationoperators.FMMutation;
 import testgeneration.OracleFIDE;
@@ -18,7 +18,7 @@ public abstract class AutoremoverFIDEmultiDCs extends AlgorithmUsingFIDE {
 
 	protected int desiredNumOfDCs = 3;
 
-	protected AutoremoverFIDEmultiDCs(FeatureModel fm, OracleFIDE o, int desiredNumOfDCs) {
+	protected AutoremoverFIDEmultiDCs(IFeatureModel fm, OracleFIDE o, int desiredNumOfDCs) {
 		super(fm, o);
 		this.desiredNumOfDCs = desiredNumOfDCs;
 	}
@@ -34,7 +34,7 @@ public abstract class AutoremoverFIDEmultiDCs extends AlgorithmUsingFIDE {
 	 * @throws TimeoutException
 	 */
 	@Override
-	public FeatureModel bestModel() throws UnsupportedModelException, IOException, TimeoutException {
+	public IFeatureModel bestModel() throws UnsupportedModelException, IOException, TimeoutException {
 		// take all the mutations
 		// FM4Testgeneration fm4tg = new FM4Testgeneration(candidate, false);
 		logger.debug("candidate " + candidate);
@@ -48,7 +48,7 @@ public abstract class AutoremoverFIDEmultiDCs extends AlgorithmUsingFIDE {
 			FMMutation next = mutants.next();
 			if (next == null)
 				continue; // necessario per errore nel nostro iterator filtered
-			FeatureModel fmP = next.getFirst();
+			IFeatureModel fmP = next.getFirst();
 			logger.debug("dcs: " + DCs.size() + DCs.toString());// +" mutants: "
 																// +
 																// mutants.size());
@@ -119,9 +119,9 @@ public abstract class AutoremoverFIDEmultiDCs extends AlgorithmUsingFIDE {
 		return getCandidate();
 	}
 
-	protected abstract Iterator<FMMutation> getMutants(FeatureModel candidate);
+	protected abstract Iterator<FMMutation> getMutants(IFeatureModel candidate);
 
-	protected Set<ConfigurationWithHash> generateDcs(FeatureModel candidate, FeatureModel fmP, int numDCs)
+	protected Set<ConfigurationWithHash> generateDcs(IFeatureModel candidate, IFeatureModel fmP, int numDCs)
 			throws UnsupportedModelException, IOException, TimeoutException {
 		return new DCGeneratorByComparator().generateDCs(candidate, fmP, numDCs);
 	}

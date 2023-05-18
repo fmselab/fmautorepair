@@ -10,7 +10,10 @@ import java.util.List;
 import org.junit.Test;
 
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
+import de.ovgu.featureide.fm.core.init.FMCoreLibrary;
+import de.ovgu.featureide.fm.core.init.LibraryManager;
 import de.ovgu.featureide.fm.core.io.UnsupportedModelException;
+import fmautorepair.mutationoperators.Consts;
 import fmautorepair.mutationoperators.FMMutation;
 import fmautorepair.utils.CollectionsUtil;
 import fmautorepair.utils.Pair;
@@ -19,9 +22,14 @@ import fmautorepair.utils.Utils;
 // alt to AND --> lla children mandatory
 public class AlternativeToAndTest {
 
+	static {
+		LibraryManager.registerLibrary(FMCoreLibrary.getInstance());
+	}
+
+	
 	@Test
 	public void test() throws FileNotFoundException, UnsupportedModelException {
-		IFeatureModel fm = Utils.readModel("models/model1fi.xml");
+		IFeatureModel fm = Utils.readModel(Consts.EXAMPLE_DIR + "models/model1fi.xml");
 		assertTrue(fm.getStructure().getRoot().isAlternative());
 		List<FMMutation> res = CollectionsUtil.listFromIterator(AlternativeToAnd.instance.mutate(fm));
 		// only one mutation

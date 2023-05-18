@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <feature_model name="FeatureIDE model">
-<feature_tree>
+    <feature_tree>
 :r Aircraft(Aircraft)
 	:m Wing(Wing)
 		:g [1,*]
@@ -17,6 +18,6 @@
 			: Cloth(Cloth)
 			: Plastic(Plastic)
 </feature_tree>
-<constraints>
+    <constraints>
 </constraints>
 </feature_model>
