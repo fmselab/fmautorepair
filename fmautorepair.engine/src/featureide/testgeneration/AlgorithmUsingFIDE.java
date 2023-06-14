@@ -16,6 +16,7 @@ import org.sat4j.specs.TimeoutException;
 
 import de.ovgu.featureide.fm.core.FeatureModelAnalyzer;
 import de.ovgu.featureide.fm.core.analysis.FeatureProperties.FeatureStatus;
+import de.ovgu.featureide.fm.core.base.FeatureUtils;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
 import de.ovgu.featureide.fm.core.configuration.Configuration;
 import de.ovgu.featureide.fm.core.editing.Comparison;
@@ -73,7 +74,7 @@ public abstract class AlgorithmUsingFIDE implements Callable<IFeatureModel> {
 	private boolean precheck(IFeatureModel candidate, OracleFIDE o) {
 		// all the features must be present in the candidate
 		try {
-			o.getFeatureModel().getFeatureNames().containsAll(candidate.getFeatureNames());
+			FeatureUtils.getFeatureNames(o.getFeatureModel()).containsAll(FeatureUtils.getFeatureNames(candidate);
 		} catch (FileNotFoundException | UnsupportedModelException e) {
 			e.printStackTrace();
 			return false;
