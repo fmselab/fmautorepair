@@ -1,6 +1,7 @@
 package fmautorepair.mutationprocess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -35,7 +36,6 @@ import fmautorepair.utils.CollectionsUtil;
 import fmautorepair.utils.JoinedIterator;
 import fmautorepair.utils.JoinedRandomIterator;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class FMMutationProcess.
  */
@@ -47,36 +47,42 @@ public class FMMutationProcess {
 	 * @return the FM mutator[]
 	 */
 	// attenzione crea circolarita' dipendenze
-	public static FMMutator[] allMutationOperators() {
+	public static Iterator<FMMutator> allMutationOperators() {
 
-		return new FMMutator[] { 
-				MissingFeature.instance, 
-				ConstraintRemover.instance,
-				AlternativeToAnd.instance,
-				AlternativeToOr.instance, 
-				AlternativeToAndOpt.instance,
-				OrToAltenative.instance, 
-				OrToAnd.instance, 
-				OrToAndOpt.instance,
-				AndToOr.instance, 
-				MandatoryToOptional.instance,
-				OptionalToMandatory.instance, 
-				AndToAlternative.instance,
-				NegationMutant.instance,
-				LogicAndToOr.instance,
-				LogicOrToAnd.instance,
-				ConstraintSubstitute.instance,
-				LiteralChanger.instance,
-				ConstraintAdder.instance, 
-				IffToImplies.instance, 
-				ImpliesToIff.instance,
-				RequiresToExcludes.instance,
-				ExcludesToRequires.instance,
-				MoveFeature.instance,
-		// ExcludesAsCNFToRequires.instance,
-		// RequiresAsCnfToExcludes.instance,
-		};
+		return new JoinedIterator<FMMutator>(
+				Arrays.stream(TreeRelatedMutations).iterator(),
+				Arrays.stream(ConstraintsRelatedMutations).iterator(),
+				Collections.singletonList(MoveFeature.instance).iterator());
+				// ExcludesAsCNFToRequires.instance,
+				// RequiresAsCnfToExcludes.instance,
 	}
+
+	public final static FMMutator[] TreeRelatedMutations = {
+			MissingFeature.instance, 
+			AlternativeToAnd.instance,
+			AlternativeToOr.instance, 
+			AlternativeToAndOpt.instance,
+			OrToAltenative.instance, 
+			OrToAnd.instance, 
+			OrToAndOpt.instance,
+			AndToOr.instance, 
+			MandatoryToOptional.instance,
+			OptionalToMandatory.instance, 
+			AndToAlternative.instance			
+	};
+	public final static FMMutator[] ConstraintsRelatedMutations = {	
+			ConstraintRemover.instance,
+			NegationMutant.instance,
+			LogicAndToOr.instance,
+			LogicOrToAnd.instance,
+			ConstraintSubstitute.instance,
+			LiteralChanger.instance,
+			//ConstraintAdder.instance, 
+			IffToImplies.instance, 
+			ImpliesToIff.instance,
+			RequiresToExcludes.instance,
+			ExcludesToRequires.instance
+	};
 
 	/**
 	 * Gets the all mutants.
@@ -86,9 +92,7 @@ public class FMMutationProcess {
 	 */
 	public static Iterator<FMMutation> getAllMutants(IFeatureModel fmModel) {
 		List<Iterator<FMMutation>> imutations = new ArrayList<>();
-		for (FMMutator mutop : FMMutationProcess.allMutationOperators()) {
-			imutations.add(mutop.mutate(fmModel));
-		}
+		FMMutationProcess.allMutationOperators().forEachRemaining(mutop -> imutations.add(mutop.mutate(fmModel)));
 		return new JoinedIterator<FMMutation>(imutations);
 	}
 
@@ -98,12 +102,9 @@ public class FMMutationProcess {
 	 * @param fmModel the fm model
 	 * @return the iterator of the mutation in random order for the first order
 	 */
-	public static Iterator<FMMutation> getAllMutantsRndOrderFOM(
-			IFeatureModel fmModel) {
+	public static Iterator<FMMutation> getAllMutantsRndOrderFOM(IFeatureModel fmModel) {
 		List<Iterator<FMMutation>> imutations = new ArrayList<>();
-		for (FMMutator mutop : FMMutationProcess.allMutationOperators()) {
-			imutations.add(mutop.mutate(fmModel));
-		}
+		FMMutationProcess.allMutationOperators().forEachRemaining(mutop -> imutations.add(mutop.mutate(fmModel)));
 		Collections.shuffle(imutations);
 		return new JoinedRandomIterator<FMMutation>(imutations);
 	}
@@ -115,29 +116,30 @@ public class FMMutationProcess {
 	 * @return the iterator of the mutation in random order from first order to
 	 *         second one
 	 */
-	public static Iterator<FMMutation> getAllMutantsRndOrderHOM2(
-			IFeatureModel fmModel) {
-		FMMutator[] mutators = FMMutationProcess.allMutationOperators();
-		
+	public static Iterator<FMMutation> getAllMutantsRndOrderHOM2(IFeatureModel fmModel) {
+		List<FMMutator> mutators = new ArrayList<>();
+			
+		FMMutationProcess.allMutationOperators().forEachRemaining(mop -> mutators.add(mop));
+
 		// costruisco tutte quelle del primo ordine come lista
 		// � dispendioso per memoria
-		List<FMMutation> all1ordermutations = CollectionsUtil
-				.listFromIterator(getAllMutantsRndOrderFOM(fmModel));
+		List<FMMutation> all1ordermutations = CollectionsUtil.listFromIterator(getAllMutantsRndOrderFOM(fmModel));
 		Collections.shuffle(all1ordermutations);
 		// now the second order
 		List<Iterator<FMMutation>> secOrdmutations = new ArrayList<>();
-		ArrayList<Class<? extends FMMutator> > mutOpClass = new ArrayList<Class<? extends FMMutator> >();
- 		for (FMMutator mutop: mutators) {
+		ArrayList<Class<? extends FMMutator>> mutOpClass = new ArrayList<Class<? extends FMMutator>>();
+		for (FMMutator mutop : mutators) {
 			mutOpClass.add(mutop.getClass());
 		}
- 		for(FMMutation m: all1ordermutations) {
+		for (FMMutation m : all1ordermutations) {
 			int indexMutator = mutOpClass.indexOf(m.getMutationClass());
 			IFeatureModel firstOrderMutant = m.getFirst();
-			for (int i = indexMutator; i < mutators.length; i++) {
-				Iterator<FMMutation> itSomMutations = mutators[i].mutate(firstOrderMutant);
-				//List<FMMutation> somMutations = CollectionsUtil.listFromIterator(itSomMutations);
-				//Collections.shuffle(somMutations);
-				//secOrdmutations.add(somMutations.iterator());
+			for (int i = indexMutator; i < mutators.size(); i++) {
+				Iterator<FMMutation> itSomMutations = mutators.get(i).mutate(firstOrderMutant);
+				// List<FMMutation> somMutations =
+				// CollectionsUtil.listFromIterator(itSomMutations);
+				// Collections.shuffle(somMutations);
+				// secOrdmutations.add(somMutations.iterator());
 				secOrdmutations.add(itSomMutations);
 			}
 		}
@@ -146,56 +148,54 @@ public class FMMutationProcess {
 		return new JoinedIterator<>(all1ordermutations.iterator(),
 				new JoinedRandomIterator<FMMutation>(secOrdmutations));
 	}
-	
+
 	/**
 	 * Gets the all mutants rnd order ho m2in order.
 	 *
 	 * @param fmModel the fm model
 	 * @return the all mutants rnd order ho m2in order
 	 */
-	public static Iterator<FMMutation> getAllMutantsRndOrderHOM2inOrder(
-			IFeatureModel fmModel) {
-		FMMutator[] mutators = FMMutationProcess.allMutationOperators();
-		
+	public static Iterator<FMMutation> getAllMutantsRndOrderHOM2inOrder(IFeatureModel fmModel) {
+		List<FMMutator> mutators = new ArrayList<>();			
+		FMMutationProcess.allMutationOperators().forEachRemaining(mop -> mutators.add(mop));
+
 		// costruisco tutte quelle del primo ordine come lista
 		// � dispendioso per memoria
 		Iterator<FMMutation> a = getAllMutantsRndOrderFOM(fmModel);
 		// now the second order
-		
+
 		List<Iterator<FMMutation>> secOrdmutations = new ArrayList<>();
-		ArrayList<Class<? extends FMMutator> > mutOpClass = new ArrayList<Class<? extends FMMutator> >();
- 		for (FMMutator mutop: mutators) {
+		ArrayList<Class<? extends FMMutator>> mutOpClass = new ArrayList<Class<? extends FMMutator>>();
+		for (FMMutator mutop : mutators) {
 			mutOpClass.add(mutop.getClass());
 		}
- 		while (a.hasNext()) {
- 			FMMutation m = a.next();
+		while (a.hasNext()) {
+			FMMutation m = a.next();
 			int indexMutator = mutOpClass.indexOf(m.getMutationClass());
 			IFeatureModel firstOrderMutant = m.getFirst();
-			for (int i = indexMutator; i < mutators.length; i++) {
-				Iterator<FMMutation> itSomMutations = mutators[i].mutate(firstOrderMutant);
-				//List<FMMutation> somMutations = CollectionsUtil.listFromIterator(itSomMutations);
-				//Collections.shuffle(somMutations);
-				//secOrdmutations.add(somMutations.iterator());
+			for (int i = indexMutator; i < mutators.size(); i++) {
+				Iterator<FMMutation> itSomMutations = mutators.get(i).mutate(firstOrderMutant);
+				// List<FMMutation> somMutations =
+				// CollectionsUtil.listFromIterator(itSomMutations);
+				// Collections.shuffle(somMutations);
+				// secOrdmutations.add(somMutations.iterator());
 				secOrdmutations.add(itSomMutations);
 			}
 		}
 		Collections.shuffle(secOrdmutations);
-		
+
 		// unite the first with the second
-		return new JoinedIterator<>(getAllMutants(fmModel),
-				new JoinedRandomIterator<FMMutation>(secOrdmutations));
+		return new JoinedIterator<>(getAllMutants(fmModel), new JoinedRandomIterator<FMMutation>(secOrdmutations));
 	}
+
 	/**
 	 * Gets the some mutants.
 	 *
-	 * @param fmModel
-	 *            the fm model
-	 * @param n
-	 *            the n
+	 * @param fmModel the fm model
+	 * @param n       the n
 	 * @return the maximum n mutants randomly selected
 	 */
-	public static Iterator<FMMutation> getSomeMutants(
-			final IFeatureModel fmModel, final int n) {
+	public static Iterator<FMMutation> getSomeMutants(final IFeatureModel fmModel, final int n) {
 
 		return new Iterator<FMMutation>() {
 			int i = 0;
