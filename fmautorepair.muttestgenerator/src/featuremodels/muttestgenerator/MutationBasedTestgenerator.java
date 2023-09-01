@@ -8,10 +8,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import org.prop4j.And;
 import org.prop4j.FMToBDD;
+import org.prop4j.Literal;
 import org.prop4j.Node;
+import org.prop4j.Not;
 
+import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
+import de.ovgu.featureide.fm.core.base.impl.Feature;
 import de.ovgu.featureide.fm.core.editing.NodeCreator;
 import de.ovgu.featureide.fm.core.init.FMCoreLibrary;
 import de.ovgu.featureide.fm.core.io.manager.FeatureModelManager;
@@ -65,7 +70,19 @@ public class MutationBasedTestgenerator implements Callable<Void> {
 			FMMutation next = mutants.next();
 			System.out.print("mutation " + next.getSecond());
 			try {
-				BDD bddM = f2bdd.nodeToBDD(NodeCreator.createNodes(next.getFirst()));
+				IFeatureModel mutFM = next.getFirst();
+				Node mutNodes = NodeCreator.createNodes(mutFM);
+				// get the feature name since it may have been changed
+				Set<IFeature> deletedfeatures = new HashSet<>(oldFM.getFeatures());
+				deletedfeatures.removeAll(mutFM.getFeatures());
+				//System.err.println(deletedfeatures);
+				assert deletedfeatures.size() <= 1;
+				if (deletedfeatures.size() == 1) {
+					IFeature removedFeature = deletedfeatures.iterator().next();
+					mutNodes = new And(new Not(new Literal(removedFeature)),mutNodes);
+				}
+				//
+				BDD bddM = f2bdd.nodeToBDD(mutNodes);
 				// do the xor
 				BDD xorBdd = bdd.xorWith(bddM);
 				int num = (int) xorBdd.satCount();
