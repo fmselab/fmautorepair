@@ -41,6 +41,19 @@ import fmautorepair.utils.JoinedRandomIterator;
  */
 public class FMMutationProcess {
 
+	
+	/**
+	 * @return mutation operators as list
+	 * use the iterator if possible to avoid to build all the mutations from the beginning 
+	 */
+	@Deprecated
+	public static List<FMMutator> allMutationOperatorsAsList() {
+		List<FMMutator> mutators = new ArrayList<>();
+		FMMutationProcess.allMutationOperators().forEachRemaining(mop -> mutators.add(mop));
+		return mutators;
+	}
+	
+	
 	/**
 	 * All mutation operators.
 	 *
@@ -48,7 +61,6 @@ public class FMMutationProcess {
 	 */
 	// attenzione crea circolarita' dipendenze
 	public static Iterator<FMMutator> allMutationOperators() {
-
 		return new JoinedIterator<FMMutator>(
 				Arrays.stream(TreeRelatedMutations).iterator(),
 				Arrays.stream(ConstraintsRelatedMutations).iterator(),
@@ -117,10 +129,8 @@ public class FMMutationProcess {
 	 *         second one
 	 */
 	public static Iterator<FMMutation> getAllMutantsRndOrderHOM2(IFeatureModel fmModel) {
-		List<FMMutator> mutators = new ArrayList<>();
-			
-		FMMutationProcess.allMutationOperators().forEachRemaining(mop -> mutators.add(mop));
-
+		
+		List<FMMutator> mutators = FMMutationProcess.allMutationOperatorsAsList();
 		// costruisco tutte quelle del primo ordine come lista
 		// � dispendioso per memoria
 		List<FMMutation> all1ordermutations = CollectionsUtil.listFromIterator(getAllMutantsRndOrderFOM(fmModel));
