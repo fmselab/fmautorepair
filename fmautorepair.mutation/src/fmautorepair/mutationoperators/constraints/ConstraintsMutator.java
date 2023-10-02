@@ -53,6 +53,8 @@ public abstract class ConstraintsMutator extends FMMutator {
 			public FMMutation next() {
 				IConstraint c = ic.next();
 				int i = fm.getConstraintIndex(c);
+				if (i==-1)
+					return null;
 				// logger.debug("modifying " + i);
 				// build a copy (deep) of the model to be mutated
 				IFeatureModel fm2 = fm.clone();

@@ -33,9 +33,8 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
-
 @Command(name = "mutfmtg", description = "mutatation based test generation for feature models")
-public class MutationBasedTestgenerator implements Callable<Void> {
+public class MutationBasedTestgenerator implements Callable<TestSuite> {
 
 	static Logger LOG = Logger.getLogger(MutationBasedTestgenerator.class);
 
@@ -53,15 +52,14 @@ public class MutationBasedTestgenerator implements Callable<Void> {
 	}
 
 	@Override
-	public Void call() throws Exception {
+	public TestSuite call() throws Exception {
 		FMCoreLibrary.getInstance().install();
 		String absolutePath = file.getAbsolutePath();
 		System.out.println("generating tests from " + absolutePath);
-		generate(absolutePath);
-		return null;
+		return generate(absolutePath, false);
 	}
 
-	public TestSuite generate(String fmPathStr) {
+	public TestSuite generate(String fmPathStr, boolean onlyValid) {
 		Path oldFMPath = Path.of(fmPathStr);
 		IFeatureModel oldFM = FeatureModelManager.load(oldFMPath);
 		List<String> features = oldFM.getFeatures().stream().map(t -> t.getName()).collect(Collectors.toList());
@@ -70,51 +68,56 @@ public class MutationBasedTestgenerator implements Callable<Void> {
 		FMToBDD f2bdd = new FMToBDD(features);
 		// create the bdd
 		Node createNodes = NodeCreator.createNodes(oldFM);
-		BDD bdd = f2bdd.nodeToBDD(createNodes);
+//		BDD bdd = f2bdd.nodeToBDD(createNodes);
 		// get the mutations
 		Iterator<FMMutation> mutants = FMMutationProcess.getAllMutantsRndOrderFOM(oldFM);
 		// test suite
 		Set<FMTest> testSuite = new HashSet<>();
 		while (mutants.hasNext()) {
+			BDD bdd = f2bdd.nodeToBDD(createNodes);
+			FMMutation next = mutants.next();
+			if (next == null)
+				continue;
+			LOG.debug("mutation " + next.getSecond());
 			try {
-				FMMutation next = mutants.next();
-				LOG.debug("mutation " + next.getSecond());
-				try {
-					IFeatureModel mutFM = next.getFirst();
-					Node mutNodes = NodeCreator.createNodes(mutFM);
-					// get the feature name since it may have been changed
-					Set<IFeature> deletedfeatures = new HashSet<>(oldFM.getFeatures());
-					deletedfeatures.removeAll(mutFM.getFeatures());
-					//System.err.println(deletedfeatures);
-					assert deletedfeatures.size() <= 1;
-					if (deletedfeatures.size() == 1) {
-						IFeature removedFeature = deletedfeatures.iterator().next();
-						mutNodes = new And(new Not(new Literal(removedFeature)),mutNodes);
-					}
-					//
-					BDD bddM = f2bdd.nodeToBDD(mutNodes);
-					// do the xor
-					BDD xorBdd = bdd.xor(bddM);
-					int num = (int) xorBdd.satCount();
-					if (num == 0)
-						LOG.debug(" -- equivalent mutant");
-					else {
-						AllSatIterator it = bdd.allsat();
-						FMTest test = new FMTest(it.nextSat());
-						System.out.print(" test: " + test);
-						if (check_duplicates) {
-							if (testSuite.contains(test))
-								LOG.debug(" duplicated");
-						}
-						testSuite.add(test);
-						LOG.debug("\n");
-					}
-				} catch (java.lang.ArrayStoreException e) {
-					System.out.println(" error");
-					e.printStackTrace();
+				IFeatureModel mutFM = next.getFirst();
+				Node mutNodes = NodeCreator.createNodes(mutFM);
+				// get the feature name since it may have been changed
+				Set<IFeature> deletedfeatures = new HashSet<>(oldFM.getFeatures());
+				deletedfeatures.removeAll(mutFM.getFeatures());
+				// System.err.println(deletedfeatures);
+				assert deletedfeatures.size() <= 1;
+				if (deletedfeatures.size() == 1) {
+					IFeature removedFeature = deletedfeatures.iterator().next();
+					mutNodes = new And(new Not(new Literal(removedFeature.getName())), mutNodes);
 				}
-			} catch(RuntimeException ex) {
-				System.out.println("error");	
+				//
+				BDD bddM = f2bdd.nodeToBDD(mutNodes);
+				// do the xor
+				BDD xorBdd;
+				// If tests are needed, only valid configurations are generated
+				if (onlyValid) {
+					xorBdd = bdd.andWith(bddM.not());
+				} else {
+					xorBdd = bdd.xorWith(bddM);
+				}
+				int num = (int) xorBdd.satCount();
+				if (num == 0)
+					LOG.debug(" -- equivalent mutant");
+				else {
+					AllSatIterator it = bdd.allsat();
+					FMTest test = new FMTest(it.nextSat());
+					System.out.print(" test: " + test);
+					if (check_duplicates) {
+						if (testSuite.contains(test))
+							LOG.debug(" duplicated");
+					}
+					testSuite.add(test);
+					LOG.debug("\n");
+				}
+			} catch (java.lang.ArrayStoreException e) {
+				System.out.println(" error");
+				e.printStackTrace();
 			}
 		}
 		System.out.println(testSuite.size() + " tests are generated:");
@@ -126,9 +129,10 @@ public class MutationBasedTestgenerator implements Callable<Void> {
 		for (FMTest t : tsmerge) {
 			System.out.println(t);
 		}
-		
-		TestSuite res = new TestSuite(getTestSuiteFromTests(tsmerge, features), new FeatureIdeImporterBoolean().importModel(oldFM), ";");
-		res.setGeneratorName("BDD_FM");
+
+		TestSuite res = new TestSuite(getTestSuiteFromTests(tsmerge, features),
+				new FeatureIdeImporterBoolean().importModel(oldFM), ";");
+		res.setGeneratorName("MUTESTGEN");
 		res.setGeneratorTime(System.currentTimeMillis() - initialTime);
 		return res;
 	}
@@ -145,19 +149,21 @@ public class MutationBasedTestgenerator implements Callable<Void> {
 		}
 		return ts;
 	}
-	
+
 	private List<FMTest> mergeTests(Set<FMTest> testSuite) {
 		List<FMTest> ts = new ArrayList<>(testSuite);
-		for(int i = 0; i < ts.size(); i++) {
+		for (int i = 0; i < ts.size(); i++) {
 			FMTest t1 = ts.get(i);
-			if (t1 == null) continue;
-			for(int j = i+1; j < ts.size(); j++) {
+			if (t1 == null)
+				continue;
+			for (int j = i + 1; j < ts.size(); j++) {
 				FMTest t2 = ts.get(j);
-				if (t2 == null) continue;
+				if (t2 == null)
+					continue;
 				if (t1.merge(t2)) {
 					// remove t2
-					ts.set(j,null);
-				}	
+					ts.set(j, null);
+				}
 			}
 		}
 		ts.removeAll(Collections.singletonList(null));
