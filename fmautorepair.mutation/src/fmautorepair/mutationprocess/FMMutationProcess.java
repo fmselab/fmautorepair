@@ -89,7 +89,7 @@ public class FMMutationProcess {
 			LogicOrToAnd.instance,
 			ConstraintSubstitute.instance,
 			LiteralChanger.instance,
-			ConstraintAdder.instance, 
+//			ConstraintAdder.instance, 
 			IffToImplies.instance, 
 			ImpliesToIff.instance,
 			RequiresToExcludes.instance,
