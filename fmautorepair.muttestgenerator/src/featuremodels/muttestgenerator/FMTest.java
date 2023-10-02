@@ -58,6 +58,9 @@ public class FMTest{
 		this.test = newTest;
 		return true;
 	}
+	public byte[] getTests() {
+		return test;
+	}
 	
 	
 	

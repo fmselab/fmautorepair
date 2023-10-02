@@ -9,8 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.prop4j.And;
 import org.prop4j.FMToBDD;
@@ -18,10 +18,10 @@ import org.prop4j.Literal;
 import org.prop4j.Node;
 import org.prop4j.Not;
 
-
+import ctwedge.importer.featureide.FeatureIdeImporterBoolean;
+import ctwedge.util.TestSuite;
 import de.ovgu.featureide.fm.core.base.IFeature;
 import de.ovgu.featureide.fm.core.base.IFeatureModel;
-import de.ovgu.featureide.fm.core.base.impl.Feature;
 import de.ovgu.featureide.fm.core.editing.NodeCreator;
 import de.ovgu.featureide.fm.core.init.FMCoreLibrary;
 import de.ovgu.featureide.fm.core.io.manager.FeatureModelManager;
@@ -29,7 +29,6 @@ import fmautorepair.mutationoperators.FMMutation;
 import fmautorepair.mutationprocess.FMMutationProcess;
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDD.AllSatIterator;
-import net.sf.javabdd.BDD.BDDIterator;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
@@ -62,10 +61,11 @@ public class MutationBasedTestgenerator implements Callable<Void> {
 		return null;
 	}
 
-	void generate(String fmPathStr) {
+	TestSuite generate(String fmPathStr) {
 		Path oldFMPath = Path.of(fmPathStr);
 		IFeatureModel oldFM = FeatureModelManager.load(oldFMPath);
-		List<String> features = oldFM.getFeatureOrderList();
+		List<String> features = oldFM.getFeatures().stream().map(t -> t.getName()).collect(Collectors.toList());
+		long initialTime = System.currentTimeMillis();
 
 		FMToBDD f2bdd = new FMToBDD(features);
 		// create the bdd
@@ -122,8 +122,25 @@ public class MutationBasedTestgenerator implements Callable<Void> {
 		for (FMTest t : tsmerge) {
 			System.out.println(t);
 		}
+		
+		TestSuite res = new TestSuite(getTestSuiteFromTests(tsmerge, features), new FeatureIdeImporterBoolean().importModel(oldFM), ";");
+		res.setGeneratorName("BDD_FM");
+		res.setGeneratorTime(System.currentTimeMillis() - initialTime);
+		return res;
 	}
 
+	private String getTestSuiteFromTests(List<FMTest> tsmerge, List<String> featureList) {
+		// Header
+		String ts = featureList.stream().collect(Collectors.joining(";")) + ";\n";
+		for (FMTest t : tsmerge) {
+			byte[] thisSat = t.getTests();
+			for (int i = 0; i < featureList.size(); i++) {
+				ts = ts + (thisSat[i] == 1 ? "true" : (thisSat[i] == 0 ? "false" : "*")) + ";";
+			}
+		}
+		return ts;
+	}
+	
 	private List<FMTest> mergeTests(Set<FMTest> testSuite) {
 		List<FMTest> ts = new ArrayList<>(testSuite);
 		for(int i = 0; i < ts.size(); i++) {
