@@ -18,6 +18,7 @@ import org.prop4j.Literal;
 import org.prop4j.Node;
 import org.prop4j.Not;
 
+import ctwedge.ctWedge.CitModel;
 import ctwedge.importer.featureide.FeatureIdeImporterBoolean;
 import ctwedge.util.TestSuite;
 import de.ovgu.featureide.fm.core.base.IFeature;
@@ -70,7 +71,7 @@ public class MutationBasedTestgenerator implements Callable<TestSuite> {
 		Node createNodes = NodeCreator.createNodes(oldFM);
 //		BDD bdd = f2bdd.nodeToBDD(createNodes);
 		// get the mutations
-		Iterator<FMMutation> mutants = FMMutationProcess.getAllMutantsRndOrderFOM(oldFM);
+		Iterator<FMMutation> mutants = FMMutationProcess.getAllMutants(oldFM);
 		// test suite
 		Set<FMTest> testSuite = new HashSet<>();
 		while (mutants.hasNext()) {
@@ -130,8 +131,11 @@ public class MutationBasedTestgenerator implements Callable<TestSuite> {
 			System.out.println(t);
 		}
 
-		TestSuite res = new TestSuite(getTestSuiteFromTests(tsmerge, features),
-				new FeatureIdeImporterBoolean().importModel(oldFM), ";");
+		CitModel model = new FeatureIdeImporterBoolean().importModel(oldFM);
+		TestSuite res = new TestSuite(getTestSuiteFromTests(testSuite.stream().collect(Collectors.toList()), features),
+				model, ";");
+		res.setModel(model);
+		res.setStrength(2);
 		res.setGeneratorName("MUTESTGEN");
 		res.setGeneratorTime(System.currentTimeMillis() - initialTime);
 		return res;
