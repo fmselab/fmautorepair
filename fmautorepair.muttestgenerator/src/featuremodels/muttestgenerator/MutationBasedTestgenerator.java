@@ -32,6 +32,7 @@ import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDD.AllSatIterator;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 @Command(name = "mutfmtg", description = "mutatation based test generation for feature models")
@@ -42,13 +43,19 @@ public class MutationBasedTestgenerator implements Callable<TestSuite> {
 	@Parameters(index = "0", description = "the feature model  (xmi featureide format)")
 	private File file;
 
+	
+	@Option(names = "-valid", description = "generate only valid tests")
+	boolean onlyValid;
+
+	
 	private static final boolean check_duplicates = true;
 
 	// this example implements Callable, so parsing, error handling and handling
 	// user
 	// requests for usage help or version help can be done with one line of code.
 	public static void main(String... args) {
-		int exitCode = new CommandLine(new MutationBasedTestgenerator()).execute(args);
+		MutationBasedTestgenerator generator = new MutationBasedTestgenerator();
+		int exitCode = new CommandLine(generator).execute(args);
 		System.exit(exitCode);
 	}
 
@@ -57,7 +64,7 @@ public class MutationBasedTestgenerator implements Callable<TestSuite> {
 		FMCoreLibrary.getInstance().install();
 		String absolutePath = file.getAbsolutePath();
 		System.out.println("generating tests from " + absolutePath);
-		return generate(absolutePath, false);
+		return generate(absolutePath, onlyValid);
 	}
 
 	public TestSuite generate(String fmPathStr, boolean onlyValid) {
@@ -131,7 +138,7 @@ public class MutationBasedTestgenerator implements Callable<TestSuite> {
 			System.out.println(t);
 		}
 
-		CitModel model = new FeatureIdeImporterBoolean().importModel(oldFM);
+		CitModel model = new FeatureIdeImporterBoolean().importModel(fmPathStr);
 		TestSuite res = new TestSuite(getTestSuiteFromTests(testSuite.stream().collect(Collectors.toList()), features),
 				model, ";");
 		res.setModel(model);
