@@ -32,7 +32,7 @@ public class CountTest {
 		FMFormatManager.getInstance().addExtension(new XmlFeatureModelFormat());
 		FMFactoryManager.getInstance().setWorkspaceLoader(new CoreFactoryWorkspaceLoader());
 		//Path path = Path.of("../fmautorepair.models/models/example_2.xml");
-		Path path = Path.of("berkeleyDBModel.xml");
+		Path path = Path.of("F:\\Dati-Andrea\\GitHub\\FMConfigurationsCounter\\examples\\uClinuxDistribution.xml");
 		assertTrue(Files.exists(path));
 		IFeatureModel fm = FeatureModelManager.load(path);
 		

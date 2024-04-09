@@ -15,6 +15,8 @@ public class FMToBDD {
 
 	private static final Logger LOGGER = Logger.getLogger(FMToBDD.class);
 
+	private double maxNodes = 0;
+
 	BDDFactory init;
 
 	List<String> variables;
@@ -30,44 +32,70 @@ public class FMToBDD {
 	}
 
 	public BDD nodeToBDD(Node n) {
-		return nodeToBDDNormalized(n.eliminate(Choose.class, AtMost.class,AtLeast.class));
+		return nodeToBDDNormalized(n.eliminate(Choose.class, AtMost.class, AtLeast.class));
 	}
 
 	private BDD nodeToBDDNormalized(Node n) {
-		LOGGER.debug("converting node " + n.toString() + " of class "	+ n.getClass());
+		LOGGER.debug("converting node " + n.toString() + " of class " + n.getClass());
 		// as usual
 		if (n instanceof And) {
 			if (n.getChildren().length < 2) {
 				LOGGER.debug(n.getChildren()[0].toString());
-				return nodeToBDD(n.getChildren()[0]);
-				// throw new NotTranslableException(n);
-			} else
-				return distribute(BDDOp.AND, nodesToBDDs(((And) n).getChildren()));
+				BDD nodeToBDD = nodeToBDD(n.getChildren()[0]);
+				updateNodes(nodeToBDD);
+				return nodeToBDD;
+			} else {
+				BDD nodeToBDD = distribute(BDDOp.AND, nodesToBDDs(((And) n).getChildren()));
+				updateNodes(nodeToBDD);
+				return nodeToBDD;
+			}
 		} else if (n instanceof Or) {
-			assert n.getChildren() != null && n.getChildren().length >= 2;
-			return distribute(BDDOp.OR, nodesToBDDs(((Or) n).getChildren()));
+			assert n.getChildren() != null;
+			if (n.getChildren().length < 2) {
+				LOGGER.debug(n.getChildren()[0].toString());
+				BDD nodeToBDD = nodeToBDD(n.getChildren()[0]);
+				updateNodes(nodeToBDD);
+				return nodeToBDD;
+			} else {
+				BDD nodeToBDD = distribute(BDDOp.OR, nodesToBDDs(((Or) n).getChildren()));
+				updateNodes(nodeToBDD);
+				return nodeToBDD;
+			}
 		} else if (n instanceof Implies) {
 			assert n.getChildren() != null && n.getChildren().length == 2;
-			return distribute(BDDOp.IMPLIES,
-					nodesToBDDs(((Implies) n).getChildren()));
+			BDD nodeToBDD = distribute(BDDOp.IMPLIES, nodesToBDDs(((Implies) n).getChildren()));
+			updateNodes(nodeToBDD);
+			return nodeToBDD;
 		} else if (n instanceof Equals) {
 			assert n.getChildren() != null && n.getChildren().length == 2;
-			return distribute(BDDOp.EQ, nodesToBDDs(((Equals) n).getChildren()));
+			BDD nodeToBDD = distribute(BDDOp.EQ, nodesToBDDs(((Equals) n).getChildren()));
+			updateNodes(nodeToBDD);
+			return nodeToBDD;
 		} else if (n instanceof Not) {
 			if (n.getChildren().length != 1)
 				throw new NotTranslableException(n);
 			Node[] children = ((Not) n).getChildren();
-			return nodeToBDD(children[0]).not();
+			BDD nodeToBDD = nodeToBDD(children[0]).not();
+			updateNodes(nodeToBDD);
+			return nodeToBDD;
 		} else {
 			assert n instanceof Literal : n.getClass().getCanonicalName();
-			return literalToExpression(n);
+			BDD nodeToBDD = literalToExpression(n);
+			updateNodes(nodeToBDD);
+			return nodeToBDD;
 		} /*
-		 * (n.toString().equalsIgnoreCase("-True")) return init.zero(); if
-		 * (n.toString().equalsIgnoreCase("-False"))
-		 * 
-		 * return init.one(); }
-		 */
+			 * (n.toString().equalsIgnoreCase("-True")) return init.zero(); if
+			 * (n.toString().equalsIgnoreCase("-False"))
+			 * 
+			 * return init.one(); }
+			 */
 
+	}
+
+	private void updateNodes(BDD nodeToBDD) {
+		int count = nodeToBDD.nodeCount();
+		if (count > maxNodes)
+			maxNodes = count;
 	}
 
 	private BDD literalToExpression(Node n) {
@@ -77,8 +105,10 @@ public class FMToBDD {
 			// get the name without the negation (to be added later)
 			String name = l.var.toString();
 			assert !name.startsWith("-");
-			if (name.equalsIgnoreCase("True")) return init.zero(); 
-			if (name.equalsIgnoreCase("False")) return init.one(); 
+			if (name.equalsIgnoreCase("True"))
+				return init.zero();
+			if (name.equalsIgnoreCase("False"))
+				return init.one();
 			int indexOf = variables.indexOf(name);
 			assert indexOf >= 0;
 			return init.nithVar(indexOf);
@@ -86,10 +116,12 @@ public class FMToBDD {
 		assert l.positive;
 		String name = l.toString();
 		assert !name.startsWith("-");
-		if (name.equalsIgnoreCase("True")) return init.one(); 
-		if (name.equalsIgnoreCase("False")) return init.zero(); 
+		if (name.equalsIgnoreCase("True"))
+			return init.one();
+		if (name.equalsIgnoreCase("False"))
+			return init.zero();
 		int indexOf = variables.indexOf(name);
-		assert indexOf >= 0: "variable " + name + " not found";
+		assert indexOf >= 0 : "variable " + name + " not found";
 		return init.ithVar(indexOf);
 	}
 
@@ -124,6 +156,10 @@ public class FMToBDD {
 			strings[i] = nodeToBDD(n[i]);
 		}
 		return strings;
+	}
+
+	public double getMaxNodes() {
+		return maxNodes;
 	}
 
 }
