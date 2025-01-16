@@ -51,27 +51,6 @@
 			<artifactId>picocli</artifactId>
 			<version>4.7.5</version>
 		</dependency>
-		<dependency>
-			<groupId>featureide</groupId>
-			<artifactId>featureide.lib</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../fmautorepair.libs/de.ovgu.featureide.lib.fm-v3.10.0.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>featureide</groupId>
-			<artifactId>antlr</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../fmautorepair.libs/antlr-3.4.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>featureide</groupId>
-			<artifactId>uvl</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../fmautorepair.libs/uvl-parser.jar</systemPath>
-		</dependency>
 
 		<dependency>
 			<groupId>ctwedge</groupId>
